@@ -35,7 +35,6 @@ This mruby extension require allegro 5.0.10 or higher(currently testing in Ubunt
 
 ### TO DO
 
-* API Documents
 * Add Audio module
 * Add Joystick module
 
