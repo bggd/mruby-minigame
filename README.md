@@ -33,6 +33,8 @@ Gameloop.run
 
 This mruby extension require [allegro](http://alleg.sourceforge.net) 5.0.10 or higher(currently testing in Ubuntu 13.10 and Windows 7).
 
+For more information on [Wiki](https://github.com/bggd/mruby-minigame/wiki).
+
 ### TO DO
 
 * Add Audio module
