@@ -20,7 +20,7 @@ Gameloop.key_pressed do |key|
 end
 
 Gameloop.draw do
-  Display.clear(Color.rgb(255, 120, 120))
+  Display.clear(Color.rgb(120, 255, 120))
   
   img.draw Mouse.x, Mouse.y
   
