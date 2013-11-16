@@ -31,7 +31,7 @@ end
 Gameloop.run
 ```
 
-This mruby extension require allegro 5.0.10 or higher(currently testing in Ubuntu 13.10 and Windows 7).
+This mruby extension require [allegro](http://alleg.sourceforge.net) 5.0.10 or higher(currently testing in Ubuntu 13.10 and Windows 7).
 
 ### TO DO
 
