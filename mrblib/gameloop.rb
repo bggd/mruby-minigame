@@ -6,11 +6,22 @@ module Minigame::Gameloop
     @quit = true
   end
 
+  @mouse_pressed_blk
+  @mouse_released_blk
+
   @key_pressed_blk
   @key_released_blk
 
   @update_blk
   @draw_blk
+
+  def self.mouse_pressed(&blk)
+    @mouse_pressed_blk = blk
+  end
+
+  def self.mouse_released(&blk)
+    @mouse_released_blk = blk
+  end
 
   def self.key_pressed(&blk)
     @key_pressed_blk = blk
@@ -59,7 +70,7 @@ module Minigame::Gameloop
           #Minigame::Mouse.dy = ev.mouse.dy
           #Minigame::Mouse.dz = ev.mouse.dz
           #Minigame::Mouse.dw = ev.mouse.dw
-        when Minigame::Event::MOUSE_BUTTON_DOWN || Minigame::Event::MOUSE_BUTTON_UP
+        when Minigame::Event::MOUSE_BUTTON_DOWN, Minigame::Event::MOUSE_BUTTON_UP
           Minigame::Mouse.x = ev.mouse.x
           Minigame::Mouse.y = ev.mouse.y
           #Minigame::Mouse.z = ev.mouse.z
@@ -72,12 +83,19 @@ module Minigame::Gameloop
           when 3
             :middle
           end
+
           b = if ev.type == Minigame::Event::MOUSE_BUTTON_DOWN
                 true
               else
                 false
               end
           Minigame::Mouse.button_down[button] = b
+
+          if b
+            @mouse_pressed_blk.call(ev.mouse.x, ev.mouse.y, button) if @mouse_pressed_blk
+          else
+            @mouse_released_blk.call(ev.mouse.x, ev.mouse.y, button) if @mouse_released_blk
+          end
         when Minigame::Event::DISPLAY_CLOSE
           running = false
         end
