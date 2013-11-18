@@ -51,6 +51,9 @@ module Minigame::Gameloop
       Minigame::Key.key_pressed = Array.new(300) do |i| false end
       Minigame::Key.key_released = Array.new(300) do |i| false end
 
+      Minigame::Mouse.button_pressed = {left:false, middle:false, right:false}
+      Minigame::Mouse.button_released = {left:false, middle:false, right:false}
+
       Minigame::Event.poll do |ev|
         case ev.type
         when Minigame::Event::KEY_DOWN
@@ -89,11 +92,14 @@ module Minigame::Gameloop
               else
                 false
               end
+
           Minigame::Mouse.button_down[button] = b
 
           if b
+            Minigame::Mouse.button_pressed[button] = true
             @mouse_pressed_blk.call(ev.mouse.x, ev.mouse.y, button) if @mouse_pressed_blk
           else
+            Minigame::Mouse.button_released[button] = true
             @mouse_released_blk.call(ev.mouse.x, ev.mouse.y, button) if @mouse_released_blk
           end
         when Minigame::Event::DISPLAY_CLOSE
