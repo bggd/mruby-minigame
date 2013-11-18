@@ -37,11 +37,14 @@ mrb_mruby_minigame_gem_init(mrb_state *mrb)
   minigame_image_init(mrb, c);
   minigame_graphics_init(mrb, c);
   minigame_font_init(mrb, c);
+  minigame_audio_init(mrb, c);
+  minigame_music_init(mrb, c);
 }
 
 void
 mrb_mruby_minigame_gem_final(mrb_state *mrb)
 {
+  minigame_audio_final();
   minigame_display_final();
   minigame_event_final();
 }

@@ -2,6 +2,7 @@
 #define MRUBY_MINIGAME_H
 
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_audio.h>
 
 #include <mruby.h>
 #include <mruby/data.h>
@@ -28,5 +29,12 @@ extern void minigame_image_init(mrb_state *mrb, struct RClass *parent);
 extern void minigame_graphics_init(mrb_state *mrb, struct RClass *parent);
 
 extern void minigame_font_init(mrb_state *mrb, struct RClass *parent);
+
+extern void minigame_audio_init(mrb_state *mrb, struct RClass *parent);
+extern void minigame_audio_final(void);
+
+extern ALLEGRO_MIXER *minigame_get_audio_mixer(void);
+
+extern void minigame_music_init(mrb_state *mrb, struct RClass *parent);
 
 #endif /* MRUBY_MINIGAME_H */
