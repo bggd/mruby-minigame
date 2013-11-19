@@ -35,8 +35,3 @@ This mruby extension require [allegro](http://alleg.sourceforge.net) 5.0.10 or h
 
 For more information on [Wiki](https://github.com/bggd/mruby-minigame/wiki).
 
-### TO DO
-
-* Add Audio module
-* Add Joystick module
-
