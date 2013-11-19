@@ -6,7 +6,6 @@
 static struct RClass *music_cls = NULL;
 
 static ALLEGRO_MIXER *music_mixer = NULL;
-//static float musci_volume = 1.0f;
 
 static mrb_sym sym_loop;
 static mrb_sym sym_volume;
