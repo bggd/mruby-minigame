@@ -37,4 +37,6 @@ extern ALLEGRO_MIXER *minigame_get_audio_mixer(void);
 
 extern void minigame_music_init(mrb_state *mrb, struct RClass *parent);
 
+extern void minigame_sound_init(mrb_state *mrb, struct RClass *parent);
+
 #endif /* MRUBY_MINIGAME_H */
