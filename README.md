@@ -9,9 +9,9 @@ example:
 include Minigame
 
 # must create display at first.
-Display.create 640, 480
+Display.create(640, 480)
 
-img = Image.load "hero.png"
+img = Image.load("hero.png")
 
 Gameloop.key_pressed do |key|
   if key == Key::ESCAPE
@@ -22,9 +22,9 @@ end
 Gameloop.draw do
   Display.clear(Color.rgb(120, 255, 120))
   
-  img.draw Mouse.x, Mouse.y
+  img.draw(Mouse.x, Mouse.y)
   
-  Graphics.rect 100, 100, 32, 32, fill:true, color:Color.hsv(360.0, 1.0, 0.5)
+  Graphics.rect(100, 100, 32, 32, fill:true, color:Color.hsv(360.0, 1.0, 0.5))
 end
 
 # start game loop.
