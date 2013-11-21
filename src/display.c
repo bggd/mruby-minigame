@@ -13,9 +13,9 @@ static mrb_sym sym_fullscreen;
 static mrb_sym sym_multisample;
 static mrb_sym sym_icon;
 
-static mrb_value blend_alpha;
-static mrb_value blend_additive;
-static mrb_value blend_subtractive;
+static mrb_sym blend_alpha;
+static mrb_sym blend_additive;
+static mrb_sym blend_subtractive;
 
 static mrb_value
 display_create(mrb_state *mrb, mrb_value self)
@@ -148,21 +148,20 @@ display_screenshot(mrb_state *mrb, mrb_value self)
 static mrb_value
 display_blend_mode(mrb_state *mrb, mrb_value self)
 {
-  mrb_value mode;
+  mrb_sym mode;
 
-  mrb_get_args(mrb, "o", &mode);
+  mrb_get_args(mrb, "n", &mode);
 
-  mrb_check_type(mrb, mode, MRB_TT_SYMBOL);
-  if (mrb_obj_equal(mrb, mode, blend_alpha))
+  if (mode == blend_alpha)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
-  else if (mrb_obj_equal(mrb, mode, blend_additive))
+  else if (mode == blend_additive)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_ONE);
-  else if (mrb_obj_equal(mrb, mode, blend_subtractive))
+  else if (mode == blend_subtractive)
     al_set_blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ALPHA, ALLEGRO_ONE);
   else
-    return mrb_false_value();
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", mrb_symbol_value(mode));
 
-  return mrb_true_value();
+  return mrb_nil_value();
 }
 
 static mrb_value
@@ -192,9 +191,9 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
 
-  blend_alpha = mrb_symbol_value(mrb_intern_cstr(mrb, "alpha"));
-  blend_additive = mrb_symbol_value(mrb_intern_cstr(mrb, "additive"));
-  blend_subtractive = mrb_symbol_value(mrb_intern_cstr(mrb, "subtractive"));
+  blend_alpha = mrb_intern_cstr(mrb, "alpha");
+  blend_additive = mrb_intern_cstr(mrb, "additive");
+  blend_subtractive = mrb_intern_cstr(mrb, "subtractive");
 
   sym_title = mrb_intern_cstr(mrb, "title");
   sym_vsync = mrb_intern_cstr(mrb, "vsync");
