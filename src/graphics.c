@@ -12,6 +12,57 @@ static mrb_sym sym_color;
 static mrb_sym sym_size;
 
 static mrb_value
+graphics_line(mrb_state *mrb, mrb_value self)
+{
+  mrb_float x1, y1, x2, y2;
+  mrb_value color;
+  mrb_value size;
+  mrb_value opt;
+  int argc;
+  mrb_float line_size = 1.0;
+
+  ALLEGRO_COLOR draw_color = default_color;
+
+  argc = mrb_get_args(mrb, "ffff|H", &x1, &y1, &x2, &y2, &opt);
+
+  if (argc > 4) {
+    int i;
+    mrb_value keys;
+
+    keys = mrb_funcall(mrb, opt, "keys", 0);
+
+    for (i = 0; i < RARRAY_LEN(keys); ++i) {
+      mrb_sym sym;
+      mrb_value k = RARRAY_PTR(keys)[i];
+
+      if (mrb_string_p(k))
+        sym = mrb_intern_str(mrb, k);
+      else
+        sym = mrb_symbol(k);
+
+      if (sym == sym_color) {
+        color = mrb_hash_get(mrb, opt, k);
+        mrb_data_check_type(mrb, color, &g_minigame_color_t);
+        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+      }
+      else if (sym == sym_size) {
+        size = mrb_hash_get(mrb, opt, k);
+        line_size = mrb_float(mrb_Float(mrb, size));
+      }
+      else
+        mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", k);
+    }
+  }
+
+  x1 += 0.5;
+  x2 += 0.5;
+
+  al_draw_line(x1, y1, x2, y2, draw_color, line_size);
+
+  return mrb_nil_value();
+}
+
+static mrb_value
 graphics_rect(mrb_state *mrb, mrb_value self)
 {
   mrb_float x, y, w, h;
@@ -68,7 +119,6 @@ graphics_rect(mrb_state *mrb, mrb_value self)
     al_draw_rectangle(x, y, x+w, y+h, draw_color, line_size);
 
   return mrb_nil_value();
-
 }
 
 static mrb_value
@@ -126,7 +176,6 @@ graphics_circle(mrb_state *mrb, mrb_value self)
     al_draw_circle(x, y, r, draw_color, line_size);
 
   return mrb_nil_value();
-
 }
 
 void
@@ -138,6 +187,7 @@ minigame_graphics_init(mrb_state *mrb, struct RClass *parent)
 
   c = mrb_define_module_under(mrb, parent, "Graphics");
 
+  mrb_define_module_function(mrb, c, "line", graphics_line, MRB_ARGS_REQ(4) | MRB_ARGS_OPT(1));
   mrb_define_module_function(mrb, c, "rect", graphics_rect, MRB_ARGS_REQ(4) | MRB_ARGS_OPT(1));
   mrb_define_module_function(mrb, c, "circle", graphics_circle, MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
 
