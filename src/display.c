@@ -16,6 +16,7 @@ static mrb_sym sym_icon;
 static mrb_sym blend_alpha;
 static mrb_sym blend_additive;
 static mrb_sym blend_subtractive;
+static mrb_sym blend_premultiplied;
 
 static mrb_value
 display_create(mrb_state *mrb, mrb_value self)
@@ -158,6 +159,8 @@ display_blend_mode(mrb_state *mrb, mrb_value self)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_ONE);
   else if (mode == blend_subtractive)
     al_set_blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ALPHA, ALLEGRO_ONE);
+  else if (mode == blend_premultiplied)
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
   else
     mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", mrb_symbol_value(mode));
 
@@ -194,6 +197,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   blend_alpha = mrb_intern_cstr(mrb, "alpha");
   blend_additive = mrb_intern_cstr(mrb, "additive");
   blend_subtractive = mrb_intern_cstr(mrb, "subtractive");
+  blend_premultiplied = mrb_intern_cstr(mrb, "premultiplied");
 
   sym_title = mrb_intern_cstr(mrb, "title");
   sym_vsync = mrb_intern_cstr(mrb, "vsync");
