@@ -153,7 +153,7 @@ display_blend_mode(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "n", &mode);
 
   if (mode == blend_alpha)
-    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
   else if (mode == blend_additive)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_ONE);
   else if (mode == blend_subtractive)
