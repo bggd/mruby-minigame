@@ -65,7 +65,7 @@ graphics_line(mrb_state *mrb, mrb_value self)
 static mrb_value
 graphics_rect(mrb_state *mrb, mrb_value self)
 {
-  mrb_float x, y, w, h;
+  mrb_int x, y, w, h;
   mrb_value fill;
   mrb_value color;
   mrb_value size;
@@ -76,7 +76,7 @@ graphics_rect(mrb_state *mrb, mrb_value self)
   bool fill_mode = false;
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "ffff|H", &x, &y, &w, &h, &opt);
+  argc = mrb_get_args(mrb, "iiii|H", &x, &y, &w, &h, &opt);
 
   if (argc > 4) {
     int i;
@@ -111,12 +111,10 @@ graphics_rect(mrb_state *mrb, mrb_value self)
     }
   }
 
-  x += 0.5;
-
   if (fill_mode)
     al_draw_filled_rectangle(x, y, x+w, y+h, draw_color);
   else
-    al_draw_rectangle(x, y, x+w, y+h, draw_color, line_size);
+    al_draw_rectangle(x+0.5f, y+0.5f, x+w-0.5f, y+h-0.5f, draw_color, line_size);
 
   return mrb_nil_value();
 }
