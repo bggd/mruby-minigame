@@ -283,6 +283,27 @@ image_sub_image(mrb_state *mrb, mrb_value self)
   return mrb_nil_value();
 }
 
+mrb_value
+image_convert_mask_to_alpha(mrb_state *mrb, mrb_value self)
+{
+  mrb_value color;
+
+  ALLEGRO_COLOR *mask_color;
+
+  ALLEGRO_BITMAP *bitmap;
+
+  mrb_get_args(mrb, "o", &color);
+
+  bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
+
+  mrb_data_check_type(mrb, color, &g_minigame_color_t);
+  mask_color (ALLEGRO_COLOR*)DATA_PTR(color);
+
+  al_convert_mask_to_alpha(bitmap, mask_color);
+
+  return mrb_nil_value();
+}
+
 void
 minigame_image_init(mrb_state *mrb, struct RClass *parent)
 {
@@ -303,6 +324,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, image_cls, "clear", image_clear, MRB_ARGS_OPT(1));
   mrb_define_method(mrb, image_cls, "draw", image_draw, MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
   mrb_define_method(mrb, image_cls, "sub_image", image_sub_image, MRB_ARGS_REQ(4));
+  mrb_define_method(mrb, image_cls, "convert_mask_to_alpha", image_convert_mask_to_alpha, MRB_ARGS_REQ(1));
 
   default_color = al_map_rgb(255, 255, 255);
 
