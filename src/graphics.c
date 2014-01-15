@@ -14,7 +14,7 @@ static mrb_sym sym_size;
 static mrb_value
 graphics_line(mrb_state *mrb, mrb_value self)
 {
-  mrb_float x1, y1, x2, y2;
+  mrb_int x1, y1, x2, y2;
   mrb_value color;
   mrb_value size;
   mrb_value opt;
@@ -23,7 +23,9 @@ graphics_line(mrb_state *mrb, mrb_value self)
 
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "ffff|H", &x1, &y1, &x2, &y2, &opt);
+  ALLEGRO_VERTEX v[2] = {0};
+
+  argc = mrb_get_args(mrb, "iiii|H", &x1, &y1, &x2, &y2, &opt);
 
   if (argc > 4) {
     int i;
@@ -54,10 +56,16 @@ graphics_line(mrb_state *mrb, mrb_value self)
     }
   }
 
-  x1 += 0.5;
-  x2 += 0.5;
+  al_draw_line(x1+0.5f, y1+0.5f, x2+0.5f, y2+0.5f, draw_color, line_size);
 
-  al_draw_line(x1, y1, x2, y2, draw_color, line_size);
+  v[0].x = x1 + 0.5f;
+  v[0].y = y1 + 0.5f;
+  v[0].color = draw_color;
+  v[1].x = x2 + 0.5f;
+  v[1].y = y2 + 0.5f;
+  v[1].color = draw_color;
+
+  al_draw_prim(v, NULL, 0, 0, 2, ALLEGRO_PRIM_POINT_LIST);
 
   return mrb_nil_value();
 }
