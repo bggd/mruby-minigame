@@ -297,9 +297,9 @@ image_convert_mask_to_alpha(mrb_state *mrb, mrb_value self)
   bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
 
   mrb_data_check_type(mrb, color, &g_minigame_color_t);
-  mask_color (ALLEGRO_COLOR*)DATA_PTR(color);
+  mask_color = (ALLEGRO_COLOR*)DATA_PTR(color);
 
-  al_convert_mask_to_alpha(bitmap, mask_color);
+  al_convert_mask_to_alpha(bitmap, *mask_color);
 
   return mrb_nil_value();
 }
