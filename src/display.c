@@ -101,6 +101,9 @@ display_create(mrb_state *mrb, mrb_value self)
 
     minigame_event_register_display(disp);
 
+    /* set default blend mode to :alpha */
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
     return mrb_true_value();
   }
 
