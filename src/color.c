@@ -13,11 +13,11 @@ else if (x > 255) x = 255;
 static mrb_value
 color_rgb(mrb_state *mrb, mrb_value self)
 {
-  mrb_int r=255, g=255, b=255, a=255;
+  mrb_int r, g, b, a = 255;
 
   ALLEGRO_COLOR *color;
 
-  mrb_get_args(mrb, "|iiii", &r, &g, &b, &a);
+  mrb_get_args(mrb, "iii|i", &r, &g, &b, &a);
 
   RGB_CLAMP(r);
   RGB_CLAMP(g);
@@ -245,7 +245,7 @@ minigame_color_init(mrb_state *mrb, struct RClass *parent)
   g_minigame_color_cls = mrb_define_class_under(mrb, parent, "Color", mrb->object_class);
   MRB_SET_INSTANCE_TT(g_minigame_color_cls, MRB_TT_DATA);
 
-  mrb_define_class_method(mrb, g_minigame_color_cls, "rgb", color_rgb, MRB_ARGS_OPT(4));
+  mrb_define_class_method(mrb, g_minigame_color_cls, "rgb", color_rgb, MRB_ARGS_ARG(3, 1));
 
   mrb_define_method(mrb, g_minigame_color_cls, "r=", color_set_r, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, g_minigame_color_cls, "g=", color_set_g, MRB_ARGS_REQ(1));
