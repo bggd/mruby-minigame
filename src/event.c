@@ -97,21 +97,21 @@ minigame_event_init(mrb_state *mrb, struct RClass *parent)
 
   mrb_define_module_function(mrb, event_cls, "poll", event_poll, MRB_ARGS_BLOCK());
 
-  ev_type = mrb_intern_cstr(mrb, "@@type");
+  ev_type = mrb_intern_lit(mrb, "@@type");
 
-  ev_keyboard = mrb_intern_cstr(mrb, "@@keyboard");
-  ev_keyboard_keycode = mrb_intern_cstr(mrb, "@keycode");
+  ev_keyboard = mrb_intern_lit(mrb, "@@keyboard");
+  ev_keyboard_keycode = mrb_intern_lit(mrb, "@keycode");
 
-  ev_mouse = mrb_intern_cstr(mrb, "@@mouse");
-  ev_mouse_x = mrb_intern_cstr(mrb, "@x");
-  ev_mouse_y = mrb_intern_cstr(mrb, "@y");
-  ev_mouse_z = mrb_intern_cstr(mrb, "@z");
-  ev_mouse_w = mrb_intern_cstr(mrb, "@w");
-  ev_mouse_dx = mrb_intern_cstr(mrb, "@dx");
-  ev_mouse_dy = mrb_intern_cstr(mrb, "@dy");
-  ev_mouse_dz = mrb_intern_cstr(mrb, "@dz");
-  ev_mouse_dw = mrb_intern_cstr(mrb, "@dw");
-  ev_mouse_button = mrb_intern_cstr(mrb, "@button");
+  ev_mouse = mrb_intern_lit(mrb, "@@mouse");
+  ev_mouse_x = mrb_intern_lit(mrb, "@x");
+  ev_mouse_y = mrb_intern_lit(mrb, "@y");
+  ev_mouse_z = mrb_intern_lit(mrb, "@z");
+  ev_mouse_w = mrb_intern_lit(mrb, "@w");
+  ev_mouse_dx = mrb_intern_lit(mrb, "@dx");
+  ev_mouse_dy = mrb_intern_lit(mrb, "@dy");
+  ev_mouse_dz = mrb_intern_lit(mrb, "@dz");
+  ev_mouse_dw = mrb_intern_lit(mrb, "@dw");
+  ev_mouse_button = mrb_intern_lit(mrb, "@button");
 
   return event_cls;
 }

@@ -151,9 +151,9 @@ minigame_font_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, font_cls, "text_width", font_text_width, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, font_cls, "h", font_h, MRB_ARGS_NONE());
 
-  sym_align = mrb_intern_cstr(mrb, "align");
-  sym_align_left = mrb_intern_cstr(mrb, "left");
-  sym_align_center = mrb_intern_cstr(mrb, "center");
-  sym_align_right = mrb_intern_cstr(mrb, "right");
-  sym_color = mrb_intern_cstr(mrb, "color");
+  sym_align = mrb_intern_lit(mrb, "align");
+  sym_align_left = mrb_intern_lit(mrb, "left");
+  sym_align_center = mrb_intern_lit(mrb, "center");
+  sym_align_right = mrb_intern_lit(mrb, "right");
+  sym_color = mrb_intern_lit(mrb, "color");
 }

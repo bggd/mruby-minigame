@@ -221,6 +221,6 @@ minigame_sound_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, sound_cls, "volume=", sound_set_volume, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, sound_cls, "volume", sound_get_volume, MRB_ARGS_NONE());
 
-  sym_loop = mrb_intern_cstr(mrb, "loop");
-  sym_volume = mrb_intern_cstr(mrb, "volume");
+  sym_loop = mrb_intern_lit(mrb, "loop");
+  sym_volume = mrb_intern_lit(mrb, "volume");
 }

@@ -199,7 +199,7 @@ minigame_graphics_init(mrb_state *mrb, struct RClass *parent)
 
   default_color = al_map_rgb(255, 255, 255);
 
-  sym_fill = mrb_intern_cstr(mrb, "fill");
-  sym_color = mrb_intern_cstr(mrb, "color");
-  sym_size = mrb_intern_cstr(mrb, "size");
+  sym_fill = mrb_intern_lit(mrb, "fill");
+  sym_color = mrb_intern_lit(mrb, "color");
+  sym_size = mrb_intern_lit(mrb, "size");
 }

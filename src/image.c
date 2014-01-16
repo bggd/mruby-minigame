@@ -328,10 +328,10 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
 
   default_color = al_map_rgb(255, 255, 255);
 
-  sym_angle = mrb_intern_cstr(mrb, "angle");
-  sym_color = mrb_intern_cstr(mrb, "color");
-  sym_scale = mrb_intern_cstr(mrb, "scale");
-  sym_anchor = mrb_intern_cstr(mrb, "anchor");
-  sym_pivot = mrb_intern_cstr(mrb, "pivot");
-  sym_flip = mrb_intern_cstr(mrb, "flip");
+  sym_angle = mrb_intern_lit(mrb, "angle");
+  sym_color = mrb_intern_lit(mrb, "color");
+  sym_scale = mrb_intern_lit(mrb, "scale");
+  sym_anchor = mrb_intern_lit(mrb, "anchor");
+  sym_pivot = mrb_intern_lit(mrb, "pivot");
+  sym_flip = mrb_intern_lit(mrb, "flip");
 }

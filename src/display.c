@@ -197,16 +197,16 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
 
-  blend_alpha = mrb_intern_cstr(mrb, "alpha");
-  blend_additive = mrb_intern_cstr(mrb, "additive");
-  blend_subtractive = mrb_intern_cstr(mrb, "subtractive");
-  blend_premultiplied = mrb_intern_cstr(mrb, "premultiplied");
+  blend_alpha = mrb_intern_lit(mrb, "alpha");
+  blend_additive = mrb_intern_lit(mrb, "additive");
+  blend_subtractive = mrb_intern_lit(mrb, "subtractive");
+  blend_premultiplied = mrb_intern_lit(mrb, "premultiplied");
 
-  sym_title = mrb_intern_cstr(mrb, "title");
-  sym_vsync = mrb_intern_cstr(mrb, "vsync");
-  sym_fullscreen = mrb_intern_cstr(mrb, "fullscreen");
-  sym_multisample = mrb_intern_cstr(mrb, "multisample");
-  sym_icon = mrb_intern_cstr(mrb, "icon");
+  sym_title = mrb_intern_lit(mrb, "title");
+  sym_vsync = mrb_intern_lit(mrb, "vsync");
+  sym_fullscreen = mrb_intern_lit(mrb, "fullscreen");
+  sym_multisample = mrb_intern_lit(mrb, "multisample");
+  sym_icon = mrb_intern_lit(mrb, "icon");
 }
 
 void
