@@ -44,6 +44,8 @@ module Minigame::Gameloop
 
     frame_rate = 1.0/fps
 
+    update_prev = Minigame.get_time
+
     prev = Minigame.get_time
 
     while running && !@@quit
@@ -107,7 +109,9 @@ module Minigame::Gameloop
         end
       end
 
-      @@update_blk.call if @@update_blk
+      update_dt = Minigame.get_time - update_prev
+      @@update_blk.call(update_dt) if @@update_blk
+      update_prev = Minigame.get_time
       #Minigame::Display.clear
       @@draw_blk.call if @@draw_blk
       Minigame::Display.flip
