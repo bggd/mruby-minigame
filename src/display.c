@@ -189,7 +189,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
 
   c = mrb_define_module_under(mrb, parent, "Display");
 
-  mrb_define_module_function(mrb, c, "create", display_create, MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
+  mrb_define_module_function(mrb, c, "create", display_create, MRB_ARGS_ARG(2, 1));
   mrb_define_module_function(mrb, c, "clear", display_clear, MRB_ARGS_OPT(1));
   mrb_define_module_function(mrb, c, "flip", display_flip, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "screenshot", display_screenshot, MRB_ARGS_REQ(1));

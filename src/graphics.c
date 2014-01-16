@@ -193,9 +193,9 @@ minigame_graphics_init(mrb_state *mrb, struct RClass *parent)
 
   c = mrb_define_module_under(mrb, parent, "Graphics");
 
-  mrb_define_module_function(mrb, c, "line", graphics_line, MRB_ARGS_REQ(4) | MRB_ARGS_OPT(1));
-  mrb_define_module_function(mrb, c, "rect", graphics_rect, MRB_ARGS_REQ(4) | MRB_ARGS_OPT(1));
-  mrb_define_module_function(mrb, c, "circle", graphics_circle, MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
+  mrb_define_module_function(mrb, c, "line", graphics_line, MRB_ARGS_ARG(4, 1));
+  mrb_define_module_function(mrb, c, "rect", graphics_rect, MRB_ARGS_ARG(4, 1));
+  mrb_define_module_function(mrb, c, "circle", graphics_circle, MRB_ARGS_ARG(3, 1));
 
   default_color = al_map_rgb(255, 255, 255);
 

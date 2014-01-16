@@ -147,7 +147,7 @@ minigame_font_init(mrb_state *mrb, struct RClass *parent)
 
   mrb_define_class_method(mrb, font_cls, "load", font_load, MRB_ARGS_REQ(2));
 
-  mrb_define_method(mrb, font_cls, "draw", font_draw, MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
+  mrb_define_method(mrb, font_cls, "draw", font_draw, MRB_ARGS_ARG(3, 1));
   mrb_define_method(mrb, font_cls, "text_width", font_text_width, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, font_cls, "h", font_h, MRB_ARGS_NONE());
 

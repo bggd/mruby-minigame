@@ -213,7 +213,7 @@ minigame_sound_init(mrb_state *mrb, struct RClass *parent)
   sound_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
   al_attach_mixer_to_mixer(sound_mixer, minigame_get_audio_mixer());
 
-  mrb_define_class_method(mrb, sound_cls, "load", sound_load, MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
+  mrb_define_class_method(mrb, sound_cls, "load", sound_load, MRB_ARGS_ARG(1, 1));
   mrb_define_class_method(mrb, sound_cls, "volume=", sound_mixer_set_volume, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, sound_cls, "volume", sound_mixer_get_volume, MRB_ARGS_NONE());
 

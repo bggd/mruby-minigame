@@ -312,7 +312,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   image_cls = mrb_define_class_under(mrb, parent, "Image", mrb->object_class);
   MRB_SET_INSTANCE_TT(image_cls, MRB_TT_DATA);
 
-  mrb_define_class_method(mrb, image_cls, "new", image_new, MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
+  mrb_define_class_method(mrb, image_cls, "new", image_new, MRB_ARGS_ARG(2, 1));
   mrb_define_class_method(mrb, image_cls, "load", image_load, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, image_cls, "target", image_target, MRB_ARGS_REQ(1) | MRB_ARGS_BLOCK());
   mrb_define_class_method(mrb, image_cls, "hold_drawing", image_hold_drawing, MRB_ARGS_REQ(1));
@@ -322,7 +322,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, image_cls, "h", image_h, MRB_ARGS_NONE());
 
   mrb_define_method(mrb, image_cls, "clear", image_clear, MRB_ARGS_OPT(1));
-  mrb_define_method(mrb, image_cls, "draw", image_draw, MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
+  mrb_define_method(mrb, image_cls, "draw", image_draw, MRB_ARGS_ARG(2, 1));
   mrb_define_method(mrb, image_cls, "sub_image", image_sub_image, MRB_ARGS_REQ(4));
   mrb_define_method(mrb, image_cls, "convert_mask_to_alpha", image_convert_mask_to_alpha, MRB_ARGS_REQ(1));
 
