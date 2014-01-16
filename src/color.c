@@ -140,11 +140,11 @@ else if (x > 1) x = 1;
 static mrb_value
 color_hsv(mrb_state *mrb, mrb_value self)
 {
-  mrb_float h = 360.0, s = 1.0, v = 1.0;
+  mrb_float h, s, v;
 
   ALLEGRO_COLOR *color;
   
-  mrb_get_args(mrb, "|fff", &h, &s, &v);
+  mrb_get_args(mrb, "fff", &h, &s, &v);
 
   HSV_H_CLAMP(h);
   HSV_SV_CLAMP(s);
@@ -257,7 +257,7 @@ minigame_color_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, g_minigame_color_cls, "b", color_get_b, MRB_ARGS_NONE());
   mrb_define_method(mrb, g_minigame_color_cls, "a", color_get_a, MRB_ARGS_NONE());
 
-  mrb_define_class_method(mrb, g_minigame_color_cls, "hsv", color_hsv, MRB_ARGS_OPT(3));
+  mrb_define_class_method(mrb, g_minigame_color_cls, "hsv", color_hsv, MRB_ARGS_REQ(3));
   mrb_define_method(mrb, g_minigame_color_cls, "h=", color_set_h, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, g_minigame_color_cls, "s=", color_set_s, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, g_minigame_color_cls, "v=", color_set_v, MRB_ARGS_REQ(1));
