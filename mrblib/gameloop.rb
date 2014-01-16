@@ -1,42 +1,42 @@
 module Minigame::Gameloop
 
-  @quit = false
+  @@quit = false
 
   def self.quit
-    @quit = true
+    @@quit = true
   end
 
-  @mouse_pressed_blk
-  @mouse_released_blk
+  @@mouse_pressed_blk = nil
+  @@mouse_released_blk = nil
 
-  @key_pressed_blk
-  @key_released_blk
+  @@key_pressed_blk = nil
+  @@key_released_blk = nil
 
-  @update_blk
-  @draw_blk
+  @@update_blk = nil
+  @@draw_blk = nil
 
   def self.mouse_pressed(&blk)
-    @mouse_pressed_blk = blk
+    @@mouse_pressed_blk = blk
   end
 
   def self.mouse_released(&blk)
-    @mouse_released_blk = blk
+    @@mouse_released_blk = blk
   end
 
   def self.key_pressed(&blk)
-    @key_pressed_blk = blk
+    @@key_pressed_blk = blk
   end
 
   def self.key_released(&blk)
-    @key_released_blk = blk
+    @@key_released_blk = blk
   end
 
   def self.update(&blk)
-    @update_blk = blk
+    @@update_blk = blk
   end
 
   def self.draw(&blk)
-    @draw_blk = blk
+    @@draw_blk = blk
   end
 
   def self.run(fps=60)
@@ -46,7 +46,7 @@ module Minigame::Gameloop
 
     prev = Minigame.get_time
 
-    while running && !@quit
+    while running && !@@quit
 
       Minigame::Key.key_pressed = Array.new(300) do |i| false end
       Minigame::Key.key_released = Array.new(300) do |i| false end
@@ -59,11 +59,11 @@ module Minigame::Gameloop
         when Minigame::Event::KEY_DOWN
           Minigame::Key.key_pressed[ev.keyboard.keycode] = true
           Minigame::Key.key_down[ev.keyboard.keycode] = true
-          @key_pressed_blk.call(ev.keyboard.keycode) if @key_pressed_blk
+          @@key_pressed_blk.call(ev.keyboard.keycode) if @@key_pressed_blk
         when Minigame::Event::KEY_UP
           Minigame::Key.key_released[ev.keyboard.keycode] = true
           Minigame::Key.key_down[ev.keyboard.keycode] = false
-          @key_released_blk.call(ev.keyboard.keycode) if @key_released_blk
+          @@key_released_blk.call(ev.keyboard.keycode) if @@key_released_blk
         when Minigame::Event::MOUSE_AXES
           Minigame::Mouse.x = ev.mouse.x
           Minigame::Mouse.y = ev.mouse.y
@@ -97,19 +97,19 @@ module Minigame::Gameloop
 
           if b
             Minigame::Mouse.button_pressed[button] = true
-            @mouse_pressed_blk.call(ev.mouse.x, ev.mouse.y, button) if @mouse_pressed_blk
+            @@mouse_pressed_blk.call(ev.mouse.x, ev.mouse.y, button) if @@mouse_pressed_blk
           else
             Minigame::Mouse.button_released[button] = true
-            @mouse_released_blk.call(ev.mouse.x, ev.mouse.y, button) if @mouse_released_blk
+            @@mouse_released_blk.call(ev.mouse.x, ev.mouse.y, button) if @@mouse_released_blk
           end
         when Minigame::Event::DISPLAY_CLOSE
           running = false
         end
       end
 
-      @update_blk.call if @update_blk
+      @@update_blk.call if @@update_blk
       #Minigame::Display.clear
-      @draw_blk.call if @draw_blk
+      @@draw_blk.call if @@draw_blk
       Minigame::Display.flip
       
       dt = Minigame.get_time - prev
