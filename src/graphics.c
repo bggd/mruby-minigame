@@ -23,7 +23,7 @@ graphics_line(mrb_state *mrb, mrb_value self)
 
   ALLEGRO_COLOR draw_color = default_color;
 
-  ALLEGRO_VERTEX v[2] = {0};
+  ALLEGRO_VERTEX v[2] = {{0}, {0}};
 
   argc = mrb_get_args(mrb, "iiii|H", &x1, &y1, &x2, &y2, &opt);
 
