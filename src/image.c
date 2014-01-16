@@ -283,7 +283,7 @@ image_sub_image(mrb_state *mrb, mrb_value self)
   return mrb_nil_value();
 }
 
-mrb_value
+static mrb_value
 image_convert_mask_to_alpha(mrb_state *mrb, mrb_value self)
 {
   mrb_value color;
