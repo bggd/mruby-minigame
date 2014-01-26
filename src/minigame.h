@@ -28,8 +28,6 @@ extern void minigame_image_init(mrb_state *mrb, struct RClass *parent);
 
 extern void minigame_graphics_init(mrb_state *mrb, struct RClass *parent);
 
-extern void minigame_font_init(mrb_state *mrb, struct RClass *parent);
-
 extern void minigame_audio_init(mrb_state *mrb, struct RClass *parent);
 extern void minigame_audio_final(void);
 

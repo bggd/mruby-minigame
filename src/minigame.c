@@ -36,7 +36,6 @@ mrb_mruby_minigame_gem_init(mrb_state *mrb)
   minigame_key_constants_init(mrb, c);
   minigame_image_init(mrb, c);
   minigame_graphics_init(mrb, c);
-  minigame_font_init(mrb, c);
   minigame_audio_init(mrb, c);
   minigame_music_init(mrb, c);
   minigame_sound_init(mrb, c);
