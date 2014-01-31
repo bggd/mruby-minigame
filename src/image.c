@@ -11,6 +11,7 @@ static ALLEGRO_COLOR default_color;
 
 static mrb_sym sym_angle;
 static mrb_sym sym_color;
+static mrb_sym sym_region;
 static mrb_sym sym_scale;
 static mrb_sym sym_anchor;
 static mrb_sym sym_pivot;
@@ -158,6 +159,7 @@ image_draw(mrb_state *mrb, mrb_value self)
   mrb_float x, y;
   mrb_value angle;
   mrb_value color;
+  mrb_value region;
   mrb_value scale;
   mrb_value anchor;
   mrb_value pivot;
@@ -167,6 +169,7 @@ image_draw(mrb_state *mrb, mrb_value self)
   ALLEGRO_BITMAP *bitmap;
   mrb_float angle_rad = 0.0;
   ALLEGRO_COLOR tint = default_color;
+  mrb_int src_x = 0, src_y = 0, src_w = -1, src_h = -1;
   mrb_float scale_x = 1.0, scale_y = 1.0;
   mrb_float anchor_x = 0.0, anchor_y = 0.0;
   mrb_float pivot_x = 0.5, pivot_y = 0.5;
@@ -212,6 +215,18 @@ image_draw(mrb_state *mrb, mrb_value self)
           tint = *((ALLEGRO_COLOR*)DATA_PTR(color));
         }
       }
+      else if (sym == sym_region) {
+        region = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(region)) {
+          mrb_check_type(mrb, region, MRB_TT_ARRAY);
+          src_x = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[0]));
+          src_y = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[1]));
+          src_w = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[2]));
+          src_h = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[3]));
+          if (src_w < 0) src_w = 0;
+          if (src_h < 0) src_h = 0;
+        }
+      }
       else if (sym == sym_scale) {
         scale = mrb_hash_get(mrb, opt, k);
         if (!mrb_nil_p(scale)) {
@@ -249,8 +264,8 @@ image_draw(mrb_state *mrb, mrb_value self)
     }
   }
 
-  w = al_get_bitmap_width(bitmap);
-  h = al_get_bitmap_height(bitmap);
+  w = (src_w > -1) ? src_w : al_get_bitmap_width(bitmap);
+  h = (src_h > -1) ? src_h : al_get_bitmap_height(bitmap);
 
   cx = w * pivot_x;
   cy = h * pivot_y;
@@ -258,7 +273,7 @@ image_draw(mrb_state *mrb, mrb_value self)
   dx = x + cx - (w * anchor_x);
   dy = y + cy - (h * anchor_y);
 
-  al_draw_tinted_scaled_rotated_bitmap(bitmap, tint, cx, cy, dx, dy, scale_x, scale_y, angle_rad, flip_xy);
+  al_draw_tinted_scaled_rotated_bitmap_region(bitmap,src_x, src_y, w, h, tint, cx, cy, dx, dy, scale_x, scale_y, angle_rad, flip_xy);
 
   return mrb_nil_value();
 }
@@ -330,6 +345,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
 
   sym_angle = mrb_intern_lit(mrb, "angle");
   sym_color = mrb_intern_lit(mrb, "color");
+  sym_region = mrb_intern_lit(mrb, "region");
   sym_scale = mrb_intern_lit(mrb, "scale");
   sym_anchor = mrb_intern_lit(mrb, "anchor");
   sym_pivot = mrb_intern_lit(mrb, "pivot");
