@@ -176,6 +176,7 @@ image_draw(mrb_state *mrb, mrb_value self)
   int flip_xy = 0;
 
   mrb_float w, h;
+  mrb_float ws, hs;
   mrb_float cx, cy;
   mrb_float dx, dy;
 
@@ -269,9 +270,12 @@ image_draw(mrb_state *mrb, mrb_value self)
 
   cx = w * pivot_x;
   cy = h * pivot_y;
+  
+  ws = w * scale_x;
+  hs = h * scale_y;
 
-  dx = x + cx - (w * anchor_x);
-  dy = y + cy - (h * anchor_y);
+  dx = x + (ws * pivot_x) - (ws * anchor_x);
+  dy = y + (hs * pivot_y) - (hs * anchor_y);
 
   al_draw_tinted_scaled_rotated_bitmap_region(bitmap,src_x, src_y, w, h, tint, cx, cy, dx, dy, scale_x, scale_y, angle_rad, flip_xy);
 
