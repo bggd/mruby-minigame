@@ -13,6 +13,8 @@ static mrb_sym sym_fullscreen;
 static mrb_sym sym_multisample;
 static mrb_sym sym_icon;
 
+static mrb_sym current_blender;
+
 static mrb_sym blend_alpha;
 static mrb_sym blend_additive;
 static mrb_sym blend_subtractive;
@@ -150,7 +152,7 @@ display_screenshot(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
-display_blend_mode(mrb_state *mrb, mrb_value self)
+display_set_blender(mrb_state *mrb, mrb_value self)
 {
   mrb_sym mode;
 
@@ -166,8 +168,16 @@ display_blend_mode(mrb_state *mrb, mrb_value self)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
   else
     mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", mrb_symbol_value(mode));
+  
+  current_blender = mode;
 
   return mrb_nil_value();
+}
+
+static mrb_value
+display_get_blender(mrb_state *mrb, mrb_value self)
+{
+  return mrb_symbol_value(current_blender);
 }
 
 static mrb_value
@@ -193,7 +203,10 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, c, "clear", display_clear, MRB_ARGS_OPT(1));
   mrb_define_module_function(mrb, c, "flip", display_flip, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "screenshot", display_screenshot, MRB_ARGS_REQ(1));
-  mrb_define_module_function(mrb, c, "blend_mode", display_blend_mode, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, c, "set_blender", display_set_blender, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, c, "get_blender", display_get_blender, MRB_ARGS_NONE());
+  /* Display.blend_mode is deprecated. */
+  mrb_define_alias(mrb, c->c, "blend_mode", "set_blender");
   mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
 
@@ -201,6 +214,8 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   blend_additive = mrb_intern_lit(mrb, "additive");
   blend_subtractive = mrb_intern_lit(mrb, "subtractive");
   blend_premultiplied = mrb_intern_lit(mrb, "premultiplied");
+  
+  current_blender = blend_alpha;
 
   sym_title = mrb_intern_lit(mrb, "title");
   sym_vsync = mrb_intern_lit(mrb, "vsync");
