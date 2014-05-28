@@ -20,9 +20,9 @@ static mrb_sym ev_mouse_dw;
 static mrb_sym ev_mouse_button;
 
 void
-minigame_event_register_display(ALLEGRO_DISPLAY *disp)
+minigame_register_event_source(ALLEGRO_EVENT_SOURCE *src)
 {
-  al_register_event_source(queue, al_get_display_event_source(disp));
+  al_register_event_source(queue, src);
 }
 
 static inline void

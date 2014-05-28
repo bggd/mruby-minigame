@@ -101,7 +101,7 @@ display_create(mrb_state *mrb, mrb_value self)
       al_set_display_icon(disp, icon_bitmap);
     }
 
-    minigame_event_register_display(disp);
+    minigame_register_event_source(al_get_display_event_source(disp));
 
     /* set default blend mode to :alpha */
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
