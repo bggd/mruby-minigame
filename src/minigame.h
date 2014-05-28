@@ -22,6 +22,8 @@ extern void minigame_event_final(void);
 
 extern void minigame_event_constants_init(mrb_state *mrb, struct RClass *parent);
 
+extern void minigame_event_timer_init(mrb_state *mrb, struct RClass *parent);
+
 extern void minigame_key_constants_init(mrb_state *mrb, struct RClass *parent);
 
 extern void minigame_image_init(mrb_state *mrb, struct RClass *parent);

@@ -120,6 +120,8 @@ minigame_event_init(mrb_state *mrb, struct RClass *parent)
   ev_mouse_dw = mrb_intern_lit(mrb, "@dw");
   ev_mouse_button = mrb_intern_lit(mrb, "@button");
 
+  minigame_event_timer_init(mrb, event_cls);
+
   return event_cls;
 }
 
