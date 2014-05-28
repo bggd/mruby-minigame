@@ -39,6 +39,13 @@ module Minigame::Event
     return @@mouse
   end
 
+  def self.wait(&blk)
+    loop do
+      ev = Minigame::Event._wait_for_event()
+      blk.call(ev)
+    end
+  end
+
   def self.poll(&blk)
     while ev = Minigame::Event._get_next_event()
       blk.call(ev)
