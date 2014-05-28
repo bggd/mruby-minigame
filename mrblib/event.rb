@@ -38,4 +38,10 @@ module Minigame::Event
   def self.mouse
     return @@mouse
   end
+
+  def self.poll(&blk)
+    while ev = Minigame::Event._get_next_event()
+      blk.call(ev)
+    end
+  end
 end
