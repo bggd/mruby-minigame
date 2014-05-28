@@ -66,6 +66,14 @@ set_properties(mrb_state *mrb, ALLEGRO_EVENT *ev)
 }
 
 static mrb_value
+event_flush(mrb_state *mrb, mrb_value self)
+{
+  al_flush_event_queue(queue);
+
+  return mrb_nil_value();
+}
+
+static mrb_value
 event_wait_for_event(mrb_state *mrb, mrb_value self)
 {
   ALLEGRO_EVENT ev;
@@ -101,6 +109,7 @@ minigame_event_init(mrb_state *mrb, struct RClass *parent)
 
   event_cls = mrb_define_module_under(mrb, parent, "Event");
 
+  mrb_define_module_function(mrb, event_cls, "flush", event_flush, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, event_cls, "_wait_for_event", event_wait_for_event, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, event_cls, "_get_next_event", event_get_next_event, MRB_ARGS_NONE());
 
