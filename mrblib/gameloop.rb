@@ -44,9 +44,13 @@ module Minigame::Gameloop
 
     frame_rate = 1.0/fps
 
-    update_prev = Minigame.get_time
+    timer = Minigame::Event::Timer.new(frame_rate)
 
-    prev = Minigame.get_time
+    Minigame::Event.flush
+
+    timer.start
+
+    update_prev = Minigame.get_time
 
     while running && !@@quit
 
@@ -56,8 +60,10 @@ module Minigame::Gameloop
       Minigame::Mouse.button_pressed = {left:false, middle:false, right:false}
       Minigame::Mouse.button_released = {left:false, middle:false, right:false}
 
-      Minigame::Event.poll do |ev|
+      Minigame::Event.wait do |ev|
         case ev.type
+        when Minigame::Event::TIMER
+          break
         when Minigame::Event::KEY_DOWN
           Minigame::Key.key_pressed[ev.keyboard.keycode] = true
           Minigame::Key.key_down[ev.keyboard.keycode] = true
@@ -115,12 +121,6 @@ module Minigame::Gameloop
       #Minigame::Display.clear
       @@draw_blk.call if @@draw_blk
       Minigame::Display.flip
-      
-      dt = Minigame.get_time - prev
-      if dt < frame_rate
-        Minigame.rest(frame_rate - dt)
-      end
-      prev = Minigame.get_time
     end
   end
 end
