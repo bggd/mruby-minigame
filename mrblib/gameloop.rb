@@ -42,6 +42,8 @@ module Minigame::Gameloop
   def self.run(fps=60)
     running = true
 
+    redraw = true
+
     frame_rate = 1.0/fps
 
     timer = Minigame::Event::Timer.new(frame_rate)
@@ -63,7 +65,7 @@ module Minigame::Gameloop
       Minigame::Event.wait do |ev|
         case ev.type
         when Minigame::Event::TIMER
-          break
+          redraw = true
         when Minigame::Event::KEY_DOWN
           Minigame::Key.key_pressed[ev.keyboard.keycode] = true
           Minigame::Key.key_down[ev.keyboard.keycode] = true
@@ -113,6 +115,8 @@ module Minigame::Gameloop
         when Minigame::Event::DISPLAY_CLOSE
           running = false
         end
+
+        break if redraw && Event.empty?
       end
 
       update_dt = Minigame.get_time - update_prev
@@ -121,6 +125,7 @@ module Minigame::Gameloop
       #Minigame::Display.clear
       @@draw_blk.call if @@draw_blk
       Minigame::Display.flip
+      redraw = false
     end
   end
 end
