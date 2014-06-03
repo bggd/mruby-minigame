@@ -4,6 +4,7 @@
 
 #include "mruby/hash.h"
 #include "mruby/array.h"
+#include "mruby/value.h"
 
 static struct RClass *image_cls = NULL;
 
@@ -231,25 +232,34 @@ image_draw(mrb_state *mrb, mrb_value self)
       else if (sym == sym_scale) {
         scale = mrb_hash_get(mrb, opt, k);
         if (!mrb_nil_p(scale)) {
-          mrb_check_type(mrb, scale, MRB_TT_ARRAY);
-          scale_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(scale)[0]));
-          scale_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(scale)[1]));
+          if (mrb_array_p(scale)) {
+            scale_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(scale)[0]));
+            scale_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(scale)[1]));
+          }
+          else
+            scale_x = scale_y = mrb_float(mrb_Float(mrb, scale));
         }
       }
       else if (sym == sym_anchor) {
         anchor = mrb_hash_get(mrb, opt, k);
         if (!mrb_nil_p(anchor)) {
-          mrb_check_type(mrb, anchor, MRB_TT_ARRAY);
-          anchor_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(anchor)[0]));
-          anchor_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(anchor)[1]));
+          if (mrb_array_p(anchor)) {
+            anchor_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(anchor)[0]));
+            anchor_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(anchor)[1]));
+          }
+          else
+            anchor_x = anchor_y = mrb_float(mrb_Float(mrb, anchor));
         }
       }
       else if (sym == sym_pivot) {
         pivot = mrb_hash_get(mrb, opt, k);
         if (!mrb_nil_p(pivot)) {
-          mrb_check_type(mrb, pivot, MRB_TT_ARRAY);
-          pivot_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(pivot)[0]));
-          pivot_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(pivot)[1]));
+          if (mrb_array_p(pivot)) {
+            pivot_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(pivot)[0]));
+            pivot_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(pivot)[1]));
+          }
+          else
+            pivot_x = pivot_y = mrb_float(mrb_Float(mrb, pivot));
         }
       }
       else if (sym == sym_flip) {
