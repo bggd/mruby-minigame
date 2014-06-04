@@ -44,8 +44,15 @@ graphics_line(mrb_state *mrb, mrb_value self)
 
       if (sym == sym_color) {
         color = mrb_hash_get(mrb, opt, k);
-        mrb_data_check_type(mrb, color, &g_minigame_color_t);
-        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+        if (!mrb_nil_p(color)) {
+          if (mrb_array_p(color)) {
+            MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
+          }
+          else {
+            mrb_data_check_type(mrb, color, &g_minigame_color_t);
+            draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+          }
+        }
       }
       else if (sym == sym_size) {
         size = mrb_hash_get(mrb, opt, k);
@@ -107,8 +114,15 @@ graphics_rect(mrb_state *mrb, mrb_value self)
       }
       else if (sym == sym_color) {
         color = mrb_hash_get(mrb, opt, k);
-        mrb_data_check_type(mrb, color, &g_minigame_color_t);
-        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+        if (!mrb_nil_p(color)) {
+          if (mrb_array_p(color)) {
+            MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
+          }
+          else {
+            mrb_data_check_type(mrb, color, &g_minigame_color_t);
+            draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+          }
+        }
       }
       else if (sym == sym_size) {
         size = mrb_hash_get(mrb, opt, k);
@@ -164,8 +178,15 @@ graphics_circle(mrb_state *mrb, mrb_value self)
       }
       else if (sym == sym_color) {
         color = mrb_hash_get(mrb, opt, k);
-        mrb_data_check_type(mrb, color, &g_minigame_color_t);
-        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+        if (!mrb_nil_p(color)) {
+          if (mrb_array_p(color)) {
+            MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
+          }
+          else {
+            mrb_data_check_type(mrb, color, &g_minigame_color_t);
+            draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+          }
+        }
       }
       else if (sym == sym_size) {
         size = mrb_hash_get(mrb, opt, k);

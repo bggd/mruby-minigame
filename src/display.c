@@ -121,8 +121,15 @@ display_clear(mrb_state *mrb, mrb_value self)
   argc = mrb_get_args(mrb, "|o", &color_obj);
 
   if (argc > 0) {
-    mrb_data_check_type(mrb, color_obj, &g_minigame_color_t);
-    al_clear_to_color(*(ALLEGRO_COLOR*)DATA_PTR(color_obj));
+    ALLEGRO_COLOR clear_color;
+    if (mrb_array_p(color_obj)) {
+      MINIGAME_EXPAND_COLOR_ARRAY(color_obj, clear_color)
+    }
+    else {
+      mrb_data_check_type(mrb, color_obj, &g_minigame_color_t);
+      clear_color = *(ALLEGRO_COLOR*)DATA_PTR(color_obj);
+    }
+    al_clear_to_color(clear_color);
   }
   else
     al_clear_to_color(al_map_rgb(0, 0, 0));

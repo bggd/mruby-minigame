@@ -43,8 +43,13 @@ image_new(mrb_state *mrb, mrb_value self)
   argc = mrb_get_args(mrb, "ii|o", &width, &height, &color);
 
   if (argc > 2) {
-    mrb_data_check_type(mrb, color, &g_minigame_color_t);
-    new_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+    if (mrb_array_p(color)) {
+      MINIGAME_EXPAND_COLOR_ARRAY(color, new_color)
+    }
+    else {
+      mrb_data_check_type(mrb, color, &g_minigame_color_t);
+      new_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
+    }
   }
 
   bitmap = al_create_bitmap(width, height);
@@ -143,8 +148,13 @@ image_clear(mrb_state *mrb, mrb_value self)
   bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
 
   if (argc > 0) {
-    mrb_data_check_type(mrb, color, &g_minigame_color_t);
-    clear_color = *((ALLEGRO_COLOR*)DATA_PTR(self));
+    if (mrb_array_p(color)) {
+      MINIGAME_EXPAND_COLOR_ARRAY(color, clear_color)
+    }
+    else {
+      mrb_data_check_type(mrb, color, &g_minigame_color_t);
+      clear_color = *((ALLEGRO_COLOR*)DATA_PTR(self));
+    }
   }
 
   al_set_target_bitmap(bitmap);
@@ -213,8 +223,13 @@ image_draw(mrb_state *mrb, mrb_value self)
       else if (sym == sym_color) {
         color = mrb_hash_get(mrb, opt, k);
         if (!mrb_nil_p(color)) {
-          mrb_data_check_type(mrb, color, &g_minigame_color_t);
-          tint = *((ALLEGRO_COLOR*)DATA_PTR(color));
+          if (mrb_array_p(color)) {
+            MINIGAME_EXPAND_COLOR_ARRAY(color, tint)
+          }
+          else {
+            mrb_data_check_type(mrb, color, &g_minigame_color_t);
+            tint = *((ALLEGRO_COLOR*)DATA_PTR(color));
+          }
         }
       }
       else if (sym == sym_region) {
@@ -317,7 +332,7 @@ image_convert_mask_to_alpha(mrb_state *mrb, mrb_value self)
 {
   mrb_value color;
 
-  ALLEGRO_COLOR *mask_color;
+  ALLEGRO_COLOR mask_color;
 
   ALLEGRO_BITMAP *bitmap;
 
@@ -325,10 +340,15 @@ image_convert_mask_to_alpha(mrb_state *mrb, mrb_value self)
 
   bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
 
-  mrb_data_check_type(mrb, color, &g_minigame_color_t);
-  mask_color = (ALLEGRO_COLOR*)DATA_PTR(color);
+  if (mrb_array_p(color)) {
+    MINIGAME_EXPAND_COLOR_ARRAY(color, mask_color);
+  }
+  else {
+    mrb_data_check_type(mrb, color, &g_minigame_color_t);
+    mask_color = *(ALLEGRO_COLOR*)DATA_PTR(color);
+  }
 
-  al_convert_mask_to_alpha(bitmap, *mask_color);
+  al_convert_mask_to_alpha(bitmap, mask_color);
 
   return mrb_nil_value();
 }
