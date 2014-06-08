@@ -80,7 +80,7 @@ graphics_line(mrb_state *mrb, mrb_value self)
 static mrb_value
 graphics_rect(mrb_state *mrb, mrb_value self)
 {
-  mrb_int x, y, w, h;
+  mrb_float x, y, w, h;
   mrb_value fill;
   mrb_value color;
   mrb_value size;
@@ -91,7 +91,7 @@ graphics_rect(mrb_state *mrb, mrb_value self)
   bool fill_mode = false;
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "iiii|H", &x, &y, &w, &h, &opt);
+  argc = mrb_get_args(mrb, "ffff|H", &x, &y, &w, &h, &opt);
 
   if (argc > 4) {
     int i;
