@@ -31,6 +31,36 @@ image_free(mrb_state *mrb, void *p)
 static mrb_data_type image_t = {"Image", image_free};
 
 static mrb_value
+image_set_multiply_alpha_on_load(mrb_state *mrb, mrb_value self)
+{
+  mrb_bool b;
+
+  mrb_get_args(mrb, "b", &b);
+
+  if (b) {
+    int flags = al_get_new_bitmap_flags();
+    if ((flags & ALLEGRO_NO_PREMULTIPLIED_ALPHA) != 0) {
+      flags ^= ALLEGRO_NO_PREMULTIPLIED_ALPHA;
+      al_set_new_bitmap_flags(flags);
+    }
+  }
+  else {
+    al_add_new_bitmap_flag(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  }
+  
+  return mrb_nil_value();
+}
+
+static mrb_value
+image_get_multiply_alpha_on_load(mrb_state *mrb, mrb_value self)
+{
+  if ((al_get_new_bitmap_flags() & ALLEGRO_NO_PREMULTIPLIED_ALPHA) != 0)
+    return mrb_false_value();
+  else
+    return mrb_true_value();
+}
+
+static mrb_value
 image_new(mrb_state *mrb, mrb_value self)
 {
   mrb_int width, height;
@@ -362,6 +392,8 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   MRB_SET_INSTANCE_TT(image_cls, MRB_TT_DATA);
 
   mrb_define_class_method(mrb, image_cls, "new", image_new, MRB_ARGS_ARG(2, 1));
+  mrb_define_class_method(mrb, image_cls, "multiply_alpha_on_load=", image_set_multiply_alpha_on_load, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, image_cls, "multiply_alpha_on_load?", image_get_multiply_alpha_on_load, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, image_cls, "load", image_load, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, image_cls, "target", image_target, MRB_ARGS_REQ(1) | MRB_ARGS_BLOCK());
   mrb_define_class_method(mrb, image_cls, "hold_drawing", image_hold_drawing, MRB_ARGS_REQ(1));
@@ -376,6 +408,8 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, image_cls, "convert_mask_to_alpha", image_convert_mask_to_alpha, MRB_ARGS_REQ(1));
 
   default_color = al_map_rgb(255, 255, 255);
+
+  al_add_new_bitmap_flag(ALLEGRO_NO_PREMULTIPLIED_ALPHA);
 
   sym_angle = mrb_intern_lit(mrb, "angle");
   sym_color = mrb_intern_lit(mrb, "color");
