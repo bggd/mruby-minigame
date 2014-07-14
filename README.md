@@ -26,8 +26,7 @@ Gameloop.draw do
   
   Graphics.rect(100, 100, 32, 32,
                 fill:true,
-                color:Color.hsv(360.0, 1.0, 0.5)
-                )
+                color:Color.hsv(360.0, 1.0, 0.5))
 end
 
 # start game loop.
