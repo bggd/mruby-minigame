@@ -1,7 +1,6 @@
 #include "minigame.h"
 
 #include <allegro5/allegro_image.h>
-#include <allegro5/internal/aintern_bitmap.h>
 
 #include "mruby/hash.h"
 #include "mruby/array.h"
