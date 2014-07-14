@@ -104,8 +104,8 @@ display_create(mrb_state *mrb, mrb_value self)
 
     minigame_register_event_source(al_get_display_event_source(disp));
 
-    /* set default blend mode to :alpha */
-    al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+    /* set default blend mode to :replace */
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
 
     return mrb_true_value();
   }
@@ -226,7 +226,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   blend_premultiplied = mrb_intern_lit(mrb, "premultiplied");
   blend_replace = mrb_intern_lit(mrb, "replace");
   
-  current_blender = blend_alpha;
+  current_blender = blend_replace;
 
   sym_title = mrb_intern_lit(mrb, "title");
   sym_vsync = mrb_intern_lit(mrb, "vsync");
