@@ -1,6 +1,7 @@
 #include "minigame.h"
 
 #include <allegro5/allegro_image.h>
+#include <allegro5/internal/aintern_bitmap.h>
 
 #include "mruby/hash.h"
 #include "mruby/array.h"
@@ -17,6 +18,9 @@ static mrb_sym sym_scale;
 static mrb_sym sym_anchor;
 static mrb_sym sym_pivot;
 static mrb_sym sym_flip;
+
+static mrb_sym nearest_filter;
+static mrb_sym linear_filter;
 
 static void
 image_free(mrb_state *mrb, void *p)
@@ -109,6 +113,89 @@ image_load(mrb_state *mrb, mrb_value self)
     return mrb_obj_value(mrb_data_object_alloc(mrb, image_cls, bitmap, &image_t));
 
   return mrb_nil_value();
+}
+
+static mrb_sym
+get_min_filter(int flags)
+{
+  if ((flags & ALLEGRO_MIN_LINEAR) != 0)
+    return linear_filter;
+  else
+    return nearest_filter;
+}
+
+static mrb_sym
+get_mag_filter(int flags)
+{
+  if ((flags & ALLEGRO_MAG_LINEAR) != 0)
+    return linear_filter;
+  else
+    return nearest_filter;
+}
+
+static mrb_value
+image_set_filter(mrb_state *mrb, mrb_value self)
+{
+  mrb_sym min, mag;
+  ALLEGRO_BITMAP *bitmap, *clone;
+  int flags;
+  int backup;
+
+  mrb_get_args(mrb, "nn", &min, &mag);
+
+  bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
+  flags = al_get_bitmap_flags(bitmap);
+
+  if (min == get_min_filter(flags) && mag == get_mag_filter(flags))
+    return mrb_nil_value();
+
+  if (min == nearest_filter) {
+    if ((flags & ALLEGRO_MIN_LINEAR) != 0) flags ^= ALLEGRO_MIN_LINEAR;
+  }
+  else if (min == linear_filter) {
+    flags |= ALLEGRO_MIN_LINEAR;
+  }
+  else {
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", mrb_symbol_value(min));
+  }
+
+  if (mag == nearest_filter) {
+    if ((flags & ALLEGRO_MAG_LINEAR) != 0) flags ^= ALLEGRO_MAG_LINEAR;
+  }
+  else if (mag == linear_filter) {
+    flags |= ALLEGRO_MAG_LINEAR;
+  }
+  else {
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", mrb_symbol_value(mag));
+  }
+
+  backup = al_get_new_bitmap_flags();
+  al_set_new_bitmap_flags(flags);
+  /*al_convert_bitmap(bitmap);*/
+  clone = al_clone_bitmap(bitmap);
+  DATA_PTR(self) = clone;
+  al_destroy_bitmap(bitmap);
+  al_set_new_bitmap_flags(backup);
+
+  return mrb_nil_value();
+}
+
+static mrb_value
+image_get_filter(mrb_state *mrb, mrb_value self)
+{
+  mrb_value filters;
+  ALLEGRO_BITMAP *bitmap;
+  int flags;
+
+  bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
+  flags = al_get_bitmap_flags(bitmap);
+
+  filters = mrb_ary_new_capa(mrb, 2);
+
+  mrb_ary_push(mrb, filters, mrb_symbol_value(get_min_filter(flags)));
+  mrb_ary_push(mrb, filters, mrb_symbol_value(get_mag_filter(flags)));
+
+  return filters;
 }
 
 static mrb_value
@@ -403,6 +490,8 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, image_cls, "h", image_h, MRB_ARGS_NONE());
 
   mrb_define_method(mrb, image_cls, "clear", image_clear, MRB_ARGS_OPT(1));
+  mrb_define_method(mrb, image_cls, "set_filter", image_set_filter, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, image_cls, "get_filter", image_get_filter, MRB_ARGS_NONE());
   mrb_define_method(mrb, image_cls, "draw", image_draw, MRB_ARGS_ARG(2, 1));
   mrb_define_method(mrb, image_cls, "sub_image", image_sub_image, MRB_ARGS_REQ(4));
   mrb_define_method(mrb, image_cls, "convert_mask_to_alpha", image_convert_mask_to_alpha, MRB_ARGS_REQ(1));
@@ -418,4 +507,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   sym_anchor = mrb_intern_lit(mrb, "anchor");
   sym_pivot = mrb_intern_lit(mrb, "pivot");
   sym_flip = mrb_intern_lit(mrb, "flip");
+
+  nearest_filter = mrb_intern_lit(mrb, "nearest");
+  linear_filter = mrb_intern_lit(mrb, "linear");
 }
