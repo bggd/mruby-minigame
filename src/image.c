@@ -92,7 +92,8 @@ image_new(mrb_state *mrb, mrb_value self)
     al_clear_to_color(new_color);
     al_set_target_backbuffer(al_get_current_display());
 
-    return mrb_obj_value(mrb_data_object_alloc(mrb, image_cls, bitmap, &image_t));
+    mrb_data_init(self, bitmap, &image_t);
+    return self;
   }
 
   return mrb_nil_value();
@@ -477,7 +478,6 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   image_cls = mrb_define_class_under(mrb, parent, "Image", mrb->object_class);
   MRB_SET_INSTANCE_TT(image_cls, MRB_TT_DATA);
 
-  mrb_define_class_method(mrb, image_cls, "new", image_new, MRB_ARGS_ARG(2, 1));
   mrb_define_class_method(mrb, image_cls, "multiply_alpha_on_load=", image_set_multiply_alpha_on_load, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, image_cls, "multiply_alpha_on_load?", image_get_multiply_alpha_on_load, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, image_cls, "load", image_load, MRB_ARGS_REQ(1));
@@ -485,6 +485,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_class_method(mrb, image_cls, "hold_drawing", image_hold_drawing, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, image_cls, "hold_drawing?", image_is_hold_drawing, MRB_ARGS_NONE());
 
+  mrb_define_method(mrb, image_cls, "initialize", image_new, MRB_ARGS_ARG(2, 1));
   mrb_define_method(mrb, image_cls, "w", image_w, MRB_ARGS_NONE());
   mrb_define_method(mrb, image_cls, "h", image_h, MRB_ARGS_NONE());
 

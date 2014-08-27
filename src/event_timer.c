@@ -26,7 +26,8 @@ event_timer_new(mrb_state *mrb, mrb_value self)
 
   if (timer) {
     minigame_register_event_source(al_get_timer_event_source(timer));
-    return mrb_obj_value(mrb_data_object_alloc(mrb, event_timer_cls, timer, &event_timer_t));
+    mrb_data_init(self, timer, &event_timer_t);
+    return self;
   }
   
   return mrb_nil_value();
@@ -50,7 +51,6 @@ minigame_event_timer_init(mrb_state *mrb, struct RClass *parent)
   event_timer_cls = mrb_define_class_under(mrb, parent, "Timer", mrb->object_class);
   MRB_SET_INSTANCE_TT(event_timer_cls, MRB_TT_DATA);
 
-  mrb_define_class_method(mrb, event_timer_cls, "new", event_timer_new, MRB_ARGS_REQ(1));
-
+  mrb_define_method(mrb, event_timer_cls, "initialize", event_timer_new, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, event_timer_cls, "start", event_timer_start, MRB_ARGS_NONE());
 }
