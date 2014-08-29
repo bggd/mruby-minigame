@@ -1,5 +1,7 @@
 #include "minigame.h"
 
+static mrb_state *first_mrb = NULL;
+
 static mrb_value
 minigame_get_time(mrb_state *mrb, mrb_value self)
 {
@@ -27,6 +29,9 @@ mrb_mruby_minigame_gem_init(mrb_state *mrb)
 
   c = mrb_define_module(mrb, "Minigame");
 
+  if (first_mrb == NULL) first_mrb = mrb;
+  if (first_mrb != mrb) return;
+
   mrb_define_module_function(mrb, c, "get_time", minigame_get_time, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "rest", minigame_rest, MRB_ARGS_REQ(1));
 
@@ -44,6 +49,8 @@ mrb_mruby_minigame_gem_init(mrb_state *mrb)
 void
 mrb_mruby_minigame_gem_final(mrb_state *mrb)
 {
+  if (first_mrb != mrb) return;
+
   minigame_audio_final();
   minigame_display_final();
   minigame_event_final();
