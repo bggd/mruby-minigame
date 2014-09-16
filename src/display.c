@@ -26,8 +26,8 @@ display_create(mrb_state *mrb, mrb_value self)
 {
   mrb_int width, height;
   mrb_value title;
-  char *title_cstr = NULL;
-  char *icon_filepath = NULL;
+  const char *title_cstr = NULL;
+  const char *icon_filepath = NULL;
   mrb_value vsync;
   mrb_value fullscreen;
   mrb_value multisample;
