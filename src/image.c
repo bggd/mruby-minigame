@@ -322,7 +322,7 @@ image_draw(mrb_state *mrb, mrb_value self)
     int i;
     mrb_value keys;
 
-    keys = mrb_funcall(mrb, opt, "keys", 0);
+    keys = mrb_hash_keys(mrb, opt);
 
     for (i = 0; i < RARRAY_LEN(keys); ++i) {
       mrb_sym sym;
