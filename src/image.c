@@ -284,7 +284,7 @@ image_clear(mrb_state *mrb, mrb_value self)
 static mrb_value
 image_draw(mrb_state *mrb, mrb_value self)
 {
-  mrb_float x, y;
+  mrb_int x, y;
   mrb_value angle;
   mrb_value color;
   mrb_value region;
@@ -310,7 +310,7 @@ image_draw(mrb_state *mrb, mrb_value self)
 
   int argc;
  
-  argc = mrb_get_args(mrb, "ff|H", &x, &y, &opt);
+  argc = mrb_get_args(mrb, "ii|H", &x, &y, &opt);
 
   bitmap = (ALLEGRO_BITMAP*)DATA_PTR(self);
 
