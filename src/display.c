@@ -16,9 +16,11 @@ static mrb_sym sym_icon;
 static mrb_sym current_blender;
 
 static mrb_sym blend_alpha;
+static mrb_sym blend_screen;
 static mrb_sym blend_additive;
 static mrb_sym blend_subtractive;
 static mrb_sym blend_premultiplied;
+static mrb_sym blend_multiplicative;
 static mrb_sym blend_replace;
 
 static mrb_value
@@ -168,12 +170,16 @@ display_set_blender(mrb_state *mrb, mrb_value self)
 
   if (mode == blend_alpha)
     al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+  else if (mode == blend_screen)
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_SRC_COLOR);
   else if (mode == blend_additive)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_ONE);
   else if (mode == blend_subtractive)
     al_set_blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ALPHA, ALLEGRO_ONE);
   else if (mode == blend_premultiplied)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+  else if (mode == blend_multiplicative)
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_DEST_COLOR, ALLEGRO_ZERO);
   else if (mode == blend_replace)
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
   else
@@ -221,9 +227,11 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
 
   blend_alpha = mrb_intern_lit(mrb, "alpha");
+  blend_screen = mrb_intern_lit(mrb, "screen");
   blend_additive = mrb_intern_lit(mrb, "additive");
   blend_subtractive = mrb_intern_lit(mrb, "subtractive");
   blend_premultiplied = mrb_intern_lit(mrb, "premultiplied");
+  blend_multiplicative = mrb_intern_lit(mrb, "multiplicative");
   blend_replace = mrb_intern_lit(mrb, "replace");
   
   current_blender = blend_replace;
