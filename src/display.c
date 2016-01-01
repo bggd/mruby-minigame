@@ -197,6 +197,18 @@ display_get_blender(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
+display_set_title(mrb_state *mrb, mrb_value self)
+{
+  char *title;
+
+  mrb_get_args(mrb, "z", &title);
+
+  al_set_window_title(al_get_current_display(), title);
+
+  return mrb_nil_value();
+}
+
+static mrb_value
 display_get_w(mrb_state *mrb, mrb_value self)
 {
   return mrb_fixnum_value(al_get_display_width(disp));
@@ -247,6 +259,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, c, "get_blender", display_get_blender, MRB_ARGS_NONE());
   /* Display.blend_mode is deprecated. */
   mrb_define_alias(mrb, c->c, "blend_mode", "set_blender");
+  mrb_define_module_function(mrb, c, "set_title", display_set_title, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "render_target", display_render_target, MRB_ARGS_REQ(2)|MRB_ARGS_BLOCK());
