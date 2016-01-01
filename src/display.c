@@ -208,6 +208,30 @@ display_get_h(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value(al_get_display_height(disp));
 }
 
+static mrb_value
+display_render_target(mrb_state *mrb, mrb_value self)
+{
+  mrb_value image;
+  mrb_value blk;
+  ALLEGRO_BITMAP *bitmap;
+
+  mrb_get_args(mrb, "o&", &image, &blk);
+
+  if (mrb_nil_p(blk)) 
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "no block given");
+
+  if (!mrb_obj_is_kind_of(mrb, image, mrb_class_get_under(mrb, mrb_module_get(mrb, "Minigame"), "Image")))
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "wrong argument type");
+
+  bitmap = (ALLEGRO_BITMAP*)DATA_PTR(image);
+
+  al_set_target_bitmap(bitmap);
+  mrb_yield_argv(mrb, blk, 0, NULL);
+  al_set_target_backbuffer(al_get_current_display());
+
+  return mrb_nil_value();
+}
+
 void
 minigame_display_init(mrb_state *mrb, struct RClass *parent)
 {
@@ -225,6 +249,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_alias(mrb, c->c, "blend_mode", "set_blender");
   mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, c, "render_target", display_render_target, MRB_ARGS_REQ(2)|MRB_ARGS_BLOCK());
 
   blend_alpha = mrb_intern_lit(mrb, "alpha");
   blend_screen = mrb_intern_lit(mrb, "screen");

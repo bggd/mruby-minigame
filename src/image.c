@@ -199,27 +199,6 @@ image_get_filter(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
-image_target(mrb_state *mrb, mrb_value self)
-{
-  mrb_value key;
-  mrb_value blk;
-  ALLEGRO_BITMAP *bitmap;
-
-  mrb_get_args(mrb, "o&", &key, &blk);
-
-  if (mrb_nil_p(blk)) return mrb_nil_value();
-
-  mrb_data_check_type(mrb, key, &image_t);
-  bitmap = (ALLEGRO_BITMAP*)DATA_PTR(key);
-
-  al_set_target_bitmap(bitmap);
-  mrb_yield_argv(mrb, blk, 0, NULL);
-  al_set_target_backbuffer(al_get_current_display());
-
-  return mrb_nil_value();
-}
-
-static mrb_value
 image_hold_drawing(mrb_state *mrb, mrb_value self)
 {
   mrb_bool b;
@@ -481,7 +460,6 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_class_method(mrb, image_cls, "multiply_alpha_on_load=", image_set_multiply_alpha_on_load, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, image_cls, "multiply_alpha_on_load?", image_get_multiply_alpha_on_load, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, image_cls, "load", image_load, MRB_ARGS_REQ(1));
-  mrb_define_class_method(mrb, image_cls, "target", image_target, MRB_ARGS_REQ(1) | MRB_ARGS_BLOCK());
   mrb_define_class_method(mrb, image_cls, "hold_drawing", image_hold_drawing, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, image_cls, "hold_drawing?", image_is_hold_drawing, MRB_ARGS_NONE());
 
