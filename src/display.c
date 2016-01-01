@@ -96,6 +96,8 @@ display_create(mrb_state *mrb, mrb_value self)
   disp = al_create_display(width, height);
 
   if (disp) {
+    al_convert_bitmaps();
+
     if (title_cstr) al_set_window_title(disp, title_cstr);
     else al_set_window_title(disp, "mruby-minigame");
 
