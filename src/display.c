@@ -209,6 +209,22 @@ display_set_title(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
+display_set_icon(mrb_state *mrb, mrb_value self)
+{
+  mrb_value image;
+
+  mrb_get_args(mrb, "o", &image);
+
+  if (mrb_nil_p(image)) return mrb_nil_value();
+  if (!mrb_obj_is_kind_of(mrb, image, mrb_class_get_under(mrb, mrb_module_get(mrb, "Minigame"), "Image")))
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "wrong argument type");
+
+  al_set_display_icon(al_get_current_display(), (ALLEGRO_BITMAP*)DATA_PTR(image));
+
+  return mrb_nil_value();
+}
+
+static mrb_value
 display_get_w(mrb_state *mrb, mrb_value self)
 {
   return mrb_fixnum_value(al_get_display_width(disp));
@@ -260,6 +276,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   /* Display.blend_mode is deprecated. */
   mrb_define_alias(mrb, c->c, "blend_mode", "set_blender");
   mrb_define_module_function(mrb, c, "set_title", display_set_title, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, c, "set_icon", display_set_icon, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, c, "render_target", display_render_target, MRB_ARGS_REQ(2)|MRB_ARGS_BLOCK());
