@@ -17,6 +17,7 @@ extern void minigame_display_init(mrb_state *mrb, struct RClass *parent);
 extern void minigame_display_final(void);
 
 extern void minigame_register_event_source(ALLEGRO_EVENT_SOURCE *src);
+extern void minigame_unregister_event_source(ALLEGRO_EVENT_SOURCE *src);
 extern struct RClass* minigame_event_init(mrb_state *mrb, struct RClass *parent);
 extern void minigame_event_final(void);
 

@@ -25,6 +25,12 @@ minigame_register_event_source(ALLEGRO_EVENT_SOURCE *src)
   al_register_event_source(queue, src);
 }
 
+void
+minigame_unregister_event_source(ALLEGRO_EVENT_SOURCE *src)
+{
+  al_unregister_event_source(queue, src);
+}
+
 static inline void
 set_properties(mrb_state *mrb, ALLEGRO_EVENT *ev)
 {
