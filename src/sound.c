@@ -6,6 +6,7 @@
 
 static struct RClass *sound_buffer_cls = NULL;
 static struct RClass *sound_cls = NULL;
+
 static ALLEGRO_MIXER *sound_mixer = NULL;
 
 static mrb_sym sym_sound_buffer;
@@ -17,6 +18,18 @@ sound_buffer_free(mrb_state *mrb, void *p)
 }
 
 static mrb_data_type sound_buffer_t = {"SoundBuffer", sound_buffer_free};
+
+static mrb_value
+sound_suspend(mrb_state *mrb, mrb_value self)
+{
+  return mrb_bool_value(al_set_mixer_playing(sound_mixer, false));
+}
+
+static mrb_value
+sound_resume(mrb_state *mrb, mrb_value self)
+{
+  return mrb_bool_value(al_set_mixer_playing(sound_mixer, true));
+}
 
 static mrb_value
 sound_buffer_load(mrb_state *mrb, mrb_value self)
@@ -87,6 +100,9 @@ minigame_sound_init(mrb_state *mrb, struct RClass *parent)
 
   sound_cls = mrb_define_class_under(mrb, parent, "Sound", mrb->object_class);
   MRB_SET_INSTANCE_TT(sound_cls, MRB_TT_DATA);
+  
+  mrb_define_class_method(mrb, sound_cls, "suspend", sound_suspend, MRB_ARGS_NONE());
+  mrb_define_class_method(mrb, sound_cls, "resume", sound_resume, MRB_ARGS_NONE());
 
   mrb_define_method(mrb, sound_cls, "initialize", sound_new, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, sound_cls, "play", sound_play, MRB_ARGS_NONE());
