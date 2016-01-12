@@ -202,8 +202,8 @@ minigame_music_init(mrb_state *mrb, struct RClass *parent)
   music_cls = mrb_define_class_under(mrb, parent, "Music", mrb->object_class);
   MRB_SET_INSTANCE_TT(music_cls, MRB_TT_DATA);
 
-  music_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
-  al_attach_mixer_to_mixer(music_mixer, minigame_get_audio_mixer());
+  music_mixer = al_create_mixer(al_get_mixer_frequency(g_audio_mixer), al_get_mixer_depth(g_audio_mixer), al_get_mixer_channels(g_audio_mixer));
+  al_attach_mixer_to_mixer(music_mixer, g_audio_mixer);
 
   mrb_define_class_method(mrb, music_cls, "load", music_load, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, music_cls, "volume=", music_mixer_set_volume, MRB_ARGS_REQ(1));

@@ -10,6 +10,7 @@
 
 extern struct RClass *g_minigame_color_cls;
 extern mrb_data_type g_minigame_color_t;
+extern ALLEGRO_MIXER *g_audio_mixer;
 
 extern void minigame_color_init(mrb_state *mrb, struct RClass *parent);
 
@@ -35,8 +36,6 @@ extern void minigame_graphics_init(mrb_state *mrb, struct RClass *parent);
 
 extern void minigame_audio_init(mrb_state *mrb, struct RClass *parent);
 extern void minigame_audio_final(void);
-
-extern ALLEGRO_MIXER *minigame_get_audio_mixer(void);
 
 extern void minigame_music_init(mrb_state *mrb, struct RClass *parent);
 
