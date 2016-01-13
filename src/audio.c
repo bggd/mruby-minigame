@@ -21,19 +21,20 @@ audio_resume(mrb_state *mrb, mrb_value self)
 static mrb_value
 audio_set_volume(mrb_state *mrb, mrb_value self)
 {
-  mrb_int vol;
+  mrb_float vol;
 
-  mrb_get_args(mrb, "i", &vol);
+  mrb_get_args(mrb, "f", &vol);
 
+  if (vol < 0) vol = 0;
   al_set_mixer_gain(g_audio_mixer, vol);
 
-  return mrb_fixnum_value(al_get_mixer_gain(g_audio_mixer));
+  return mrb_float_value(mrb, al_get_mixer_gain(g_audio_mixer));
 }
 
 static mrb_value
 audio_get_volume(mrb_state *mrb, mrb_value self)
 {
-  return mrb_fixnum_value(al_get_mixer_gain(g_audio_mixer));
+  return mrb_float_value(mrb, al_get_mixer_gain(g_audio_mixer));
 }
 
 void
@@ -51,10 +52,11 @@ minigame_audio_init(mrb_state *mrb, struct RClass *parent)
 
   c = mrb_define_module_under(mrb, parent, "Audio");
 
-  mrb_define_class_method(mrb, c, "suspend", audio_suspend, MRB_ARGS_NONE());
-  mrb_define_class_method(mrb, c, "resume", audio_resume, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, c, "volume=", audio_set_volume, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, c, "volume", audio_get_volume, MRB_ARGS_NONE());
+
+  mrb_define_class_method(mrb, c, "suspend", audio_suspend, MRB_ARGS_NONE());
+  mrb_define_class_method(mrb, c, "resume", audio_resume, MRB_ARGS_NONE());
 }
 
 void
