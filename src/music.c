@@ -64,9 +64,9 @@ music_load(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
-music_play(mrb_state *mrb, mrb_value self)
+music_get_duration(mrb_state *mrb, mrb_value self)
 {
-  return mrb_bool_value(al_set_audio_stream_playing((ALLEGRO_AUDIO_STREAM*)DATA_PTR(self), true));
+  return mrb_float_value(mrb, al_get_audio_stream_length_secs((ALLEGRO_AUDIO_STREAM*)DATA_PTR(self)));
 }
 
 static mrb_value
@@ -88,6 +88,12 @@ music_get_volume(mrb_state *mrb, mrb_value self)
   return mrb_float_value(mrb, al_get_audio_stream_gain((ALLEGRO_AUDIO_STREAM*)DATA_PTR(self)));
 }
 
+static mrb_value
+music_play(mrb_state *mrb, mrb_value self)
+{
+  return mrb_bool_value(al_set_audio_stream_playing((ALLEGRO_AUDIO_STREAM*)DATA_PTR(self), true));
+}
+
 void
 minigame_music_init(mrb_state *mrb, struct RClass *parent)
 {
@@ -104,6 +110,7 @@ minigame_music_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_class_method(mrb, music_cls, "suspend", music_suspend, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, music_cls, "resume", music_resume, MRB_ARGS_NONE());
 
+  mrb_define_method(mrb, music_cls, "duration", music_get_duration, MRB_ARGS_NONE());
   mrb_define_method(mrb, music_cls, "volume=", music_set_volume, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, music_cls, "volume", music_get_volume, MRB_ARGS_NONE());
 
