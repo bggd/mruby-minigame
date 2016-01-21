@@ -95,6 +95,8 @@ image_new(mrb_state *mrb, mrb_value self)
     mrb_data_init(self, bitmap, &image_t);
     return self;
   }
+  else
+    mrb_raise(mrb, E_RUNTIME_ERROR, "Could not create Image");
 
   return mrb_nil_value();
 }
@@ -111,8 +113,8 @@ image_load(mrb_state *mrb, mrb_value self)
   
   if (bitmap)
     return mrb_obj_value(mrb_data_object_alloc(mrb, image_cls, bitmap, &image_t));
-
-  return mrb_nil_value();
+  else
+    mrb_raisef(mrb, E_RUNTIME_ERROR, "Could not load '%S'", mrb_str_new_cstr(mrb, filepath));
 }
 
 static mrb_sym

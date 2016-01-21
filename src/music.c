@@ -59,8 +59,8 @@ music_load(mrb_state *mrb, mrb_value self)
     al_attach_audio_stream_to_mixer(stream, music_mixer);
     return mrb_obj_value(mrb_data_object_alloc(mrb, music_cls, stream, &music_t));
   }
-
-  return mrb_nil_value();
+  else
+    mrb_raisef(mrb, E_RUNTIME_ERROR, "Could not load '%S'", mrb_str_new_cstr(mrb, filepath));
 }
 
 static mrb_value

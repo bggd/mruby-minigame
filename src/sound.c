@@ -61,8 +61,8 @@ sound_buffer_load(mrb_state *mrb, mrb_value self)
   sample = al_load_sample(filepath);
   if (sample)
     return mrb_obj_value(mrb_data_object_alloc(mrb, sound_buffer_cls, sample, &sound_buffer_t));
-
-  return mrb_nil_value();
+  else
+    mrb_raisef(mrb, E_RUNTIME_ERROR, "Could not load '%S'", mrb_str_new_cstr(mrb, filepath));
 }
 
 static void
@@ -90,8 +90,8 @@ sound_new(mrb_state *mrb, mrb_value self)
     mrb_iv_set(mrb, self, sym_sound_buffer, buf);
     return self;
   }
-
-  return mrb_nil_value();
+  else
+    mrb_raise(mrb, E_RUNTIME_ERROR, "Could not create Sound");
 }
 
 static mrb_value
