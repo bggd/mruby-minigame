@@ -110,6 +110,8 @@ minigame_music_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_class_method(mrb, music_cls, "suspend", music_suspend, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, music_cls, "resume", music_resume, MRB_ARGS_NONE());
 
+  mrb_undef_method(mrb, music_cls, "initialize");
+
   mrb_define_method(mrb, music_cls, "duration", music_get_duration, MRB_ARGS_NONE());
   mrb_define_method(mrb, music_cls, "volume=", music_set_volume, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, music_cls, "volume", music_get_volume, MRB_ARGS_NONE());

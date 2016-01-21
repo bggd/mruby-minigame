@@ -117,6 +117,8 @@ minigame_sound_init(mrb_state *mrb, struct RClass *parent)
 
   mrb_define_class_method(mrb, sound_buffer_cls, "load", sound_buffer_load, MRB_ARGS_REQ(1));
 
+  mrb_undef_method(mrb, sound_buffer_cls, "initialize");
+
   sound_cls = mrb_define_class_under(mrb, parent, "Sound", mrb->object_class);
   MRB_SET_INSTANCE_TT(sound_cls, MRB_TT_DATA);
 

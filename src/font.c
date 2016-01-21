@@ -136,8 +136,11 @@ minigame_font_init(mrb_state *mrb, struct RClass *parent)
   font_cls = mrb_define_class_under(mrb, parent, "Font", mrb->object_class);
   MRB_SET_INSTANCE_TT(font_cls, MRB_TT_DATA);
 
+
   mrb_define_class_method(mrb, font_cls, "load", font_load, MRB_ARGS_REQ(2));
   mrb_define_class_method(mrb, font_cls, "builtin", font_builtin, MRB_ARGS_NONE());
+
+  mrb_undef_method(mrb, font_cls, "initialize");
 
   mrb_define_method(mrb, font_cls, "puts", font_draw, MRB_ARGS_ARG(3, 1));
 

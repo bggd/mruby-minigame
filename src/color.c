@@ -247,6 +247,8 @@ minigame_color_init(mrb_state *mrb, struct RClass *parent)
 
   mrb_define_class_method(mrb, g_minigame_color_cls, "rgb", color_rgb, MRB_ARGS_ARG(3, 1));
 
+  mrb_undef_method(mrb, g_minigame_color_cls, "initialize");
+
   mrb_define_method(mrb, g_minigame_color_cls, "r=", color_set_r, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, g_minigame_color_cls, "g=", color_set_g, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, g_minigame_color_cls, "b=", color_set_b, MRB_ARGS_REQ(1));
