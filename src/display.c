@@ -3,13 +3,11 @@
 #include "mruby/array.h"
 #include "mruby/hash.h"
 #include "mruby/string.h"
+#include "mruby/variable.h"
+
+static struct RClass *display_cls = NULL;
 
 static ALLEGRO_DISPLAY *disp = NULL;
-/* These attributes for Display.toggle_screen */
-static mrb_value disp_title;
-static mrb_value disp_vsync;
-static mrb_value disp_fullscreen;
-static mrb_value disp_multisample;
 static ALLEGRO_BITMAP *icon_bitmap = NULL;
 
 static mrb_sym sym_title;
@@ -42,9 +40,15 @@ display_create(mrb_state *mrb, mrb_value self)
 
   al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
 
+  mrb_mod_cv_set(mrb, display_cls, sym_title, mrb_str_new_lit(mrb, "mruby-minigame"));
+  mrb_mod_cv_set(mrb, display_cls, sym_vsync, mrb_false_value());
+  mrb_mod_cv_set(mrb, display_cls, sym_fullscreen, mrb_false_value());
+  mrb_mod_cv_set(mrb, display_cls, sym_multisample, mrb_fixnum_value(0));
+ 
   if (argc  > 2) {
     int i;
     mrb_value keys;
+    mrb_value v;
 
     keys = mrb_hash_keys(mrb, opt);
 
@@ -58,32 +62,20 @@ display_create(mrb_state *mrb, mrb_value self)
         sym = mrb_symbol(k);
 
       if (sym == sym_title) {
-        disp_title = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(disp_title)) {
-          mrb_check_type(mrb, disp_title, MRB_TT_STRING);
-          title_cstr = mrb_string_value_cstr(mrb, &disp_title);
-        }
+        v = mrb_hash_get(mrb, opt, k);
+        mrb_mod_cv_set(mrb, display_cls, sym_title, v);
       }
       else if (sym == sym_vsync) {
-        disp_vsync = mrb_hash_get(mrb, opt, k);
-        if (mrb_bool(disp_vsync))
-          al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
-        else
-          al_set_new_display_option(ALLEGRO_VSYNC, 2, ALLEGRO_SUGGEST);
+        v = mrb_hash_get(mrb, opt, k);
+        mrb_mod_cv_set(mrb, display_cls, sym_vsync, v);
       }
       else if (sym == sym_fullscreen) {
-        disp_fullscreen = mrb_hash_get(mrb, opt, k);
-        if (mrb_bool(disp_fullscreen))
-          al_set_new_display_flags(ALLEGRO_FULLSCREEN);
-        else
-          al_set_new_display_flags(ALLEGRO_WINDOWED);
+        v = mrb_hash_get(mrb, opt, k);
+        mrb_mod_cv_set(mrb, display_cls, sym_fullscreen, v);
       }
       else if (sym == sym_multisample) {
-        mrb_int multisample;
-        disp_multisample = mrb_hash_get(mrb, opt, k);
-        multisample = mrb_fixnum(mrb_Integer(mrb, disp_multisample));
-        al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-        al_set_new_display_option(ALLEGRO_SAMPLES, multisample, ALLEGRO_SUGGEST);
+        v = mrb_hash_get(mrb, opt, k);
+        mrb_mod_cv_set(mrb, display_cls, sym_multisample, v);
       }
       else if (sym == sym_icon) {
         icon = mrb_hash_get(mrb, opt, k);
@@ -96,6 +88,23 @@ display_create(mrb_state *mrb, mrb_value self)
         mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", k);
     }
   }
+ 
+  if (mrb_bool(mrb_mod_cv_get(mrb, display_cls, sym_vsync)))
+    al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
+  else
+    al_set_new_display_option(ALLEGRO_VSYNC, 2, ALLEGRO_SUGGEST);
+
+  if (mrb_bool(mrb_mod_cv_get(mrb, display_cls, sym_fullscreen)))
+    al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+  else
+    al_set_new_display_flags(ALLEGRO_WINDOWED);
+
+  if (mrb_fixnum(mrb_mod_cv_get(mrb, display_cls, sym_multisample)) > 0) {
+    al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
+    al_set_new_display_option(ALLEGRO_SAMPLES, mrb_fixnum(mrb_mod_cv_get(mrb, display_cls, sym_multisample)), ALLEGRO_SUGGEST);
+  }
+  else
+    al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 0, ALLEGRO_SUGGEST);
 
   if (disp) {
     minigame_unregister_event_source(al_get_display_event_source(disp));
@@ -108,8 +117,7 @@ display_create(mrb_state *mrb, mrb_value self)
   if (disp) {
     al_convert_bitmaps();
 
-    if (title_cstr) al_set_window_title(disp, title_cstr);
-    else al_set_window_title(disp, "mruby-minigame");
+    al_set_window_title(disp, mrb_str_to_cstr(mrb, mrb_mod_cv_get(mrb, display_cls, sym_title)));
 
     if (icon_filepath) {
       icon_bitmap = al_load_bitmap(icon_filepath);
@@ -163,19 +171,20 @@ display_flip(mrb_state *mrb, mrb_value self)
 static mrb_value
 display_toggle_fullscreen(mrb_state *mrb, mrb_value self)
 {
-  mrb_value cls = mrb_obj_value(mrb_module_get_under(mrb, mrb_module_get(mrb, "Minigame"), "Display"));
+  mrb_value title = mrb_mod_cv_get(mrb, display_cls, sym_title);
+  mrb_value vsync = mrb_mod_cv_get(mrb, display_cls, sym_vsync);
+  mrb_value fullscreen = mrb_mod_cv_get(mrb, display_cls, sym_fullscreen);
+  mrb_value multisample = mrb_mod_cv_get(mrb, display_cls, sym_multisample);
   mrb_value w = mrb_fixnum_value(al_get_display_width(disp));
   mrb_value h = mrb_fixnum_value(al_get_display_height(disp));
   mrb_value opt = mrb_hash_new_capa(mrb, 4);
 
-  if (mrb_nil_p(disp_multisample)) disp_multisample = mrb_fixnum_value(0);
+  mrb_hash_set(mrb, opt, mrb_symbol_value(sym_title), title);
+  mrb_hash_set(mrb, opt, mrb_symbol_value(sym_vsync), vsync);
+  mrb_hash_set(mrb, opt, mrb_symbol_value(sym_fullscreen), (mrb_bool(fullscreen)) ? mrb_false_value() : mrb_true_value());
+  mrb_hash_set(mrb, opt, mrb_symbol_value(sym_multisample), multisample);
 
-  mrb_hash_set(mrb, opt, mrb_str_new_lit(mrb, "title"), disp_title);
-  mrb_hash_set(mrb, opt, mrb_str_new_lit(mrb, "vsync"), disp_vsync);
-  mrb_hash_set(mrb, opt, mrb_str_new_lit(mrb, "fullscreen"), (mrb_bool(disp_fullscreen)) ? mrb_false_value() : mrb_true_value());
-  mrb_hash_set(mrb, opt, mrb_str_new_lit(mrb, "multisample"), disp_multisample);
-
-  return mrb_funcall(mrb, cls, "create", 3, w, h, opt);
+  return mrb_funcall(mrb, mrb_obj_value(display_cls), "create", 3, w, h, opt);
 }
 
 static mrb_value
@@ -229,12 +238,12 @@ display_get_blender(mrb_state *mrb, mrb_value self)
 static mrb_value
 display_set_title(mrb_state *mrb, mrb_value self)
 {
-  char *title;
+  mrb_value title;
 
-  mrb_get_args(mrb, "z", &title);
+  mrb_get_args(mrb, "S", &title);
 
-  al_set_window_title(al_get_current_display(), title);
-  disp_title = mrb_str_new_cstr(mrb, title);
+  al_set_window_title(al_get_current_display(), mrb_str_to_cstr(mrb, title));
+  mrb_mod_cv_set(mrb, display_cls, sym_title, title);
 
   return mrb_nil_value();
 }
@@ -294,24 +303,22 @@ display_render_target(mrb_state *mrb, mrb_value self)
 void
 minigame_display_init(mrb_state *mrb, struct RClass *parent)
 {
-  struct RClass *c;
+  display_cls = mrb_define_module_under(mrb, parent, "Display");
 
-  c = mrb_define_module_under(mrb, parent, "Display");
-
-  mrb_define_module_function(mrb, c, "create", display_create, MRB_ARGS_ARG(2, 1));
-  mrb_define_module_function(mrb, c, "clear", display_clear, MRB_ARGS_OPT(1));
-  mrb_define_module_function(mrb, c, "flip", display_flip, MRB_ARGS_NONE());
-  mrb_define_module_function(mrb, c, "toggle_fullscreen", display_toggle_fullscreen, MRB_ARGS_NONE());
-  mrb_define_module_function(mrb, c, "screenshot", display_screenshot, MRB_ARGS_REQ(1));
-  mrb_define_module_function(mrb, c, "set_blender", display_set_blender, MRB_ARGS_REQ(1));
-  mrb_define_module_function(mrb, c, "get_blender", display_get_blender, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, display_cls, "create", display_create, MRB_ARGS_ARG(2, 1));
+  mrb_define_module_function(mrb, display_cls, "clear", display_clear, MRB_ARGS_OPT(1));
+  mrb_define_module_function(mrb, display_cls, "flip", display_flip, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, display_cls, "toggle_fullscreen", display_toggle_fullscreen, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, display_cls, "screenshot", display_screenshot, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, display_cls, "set_blender", display_set_blender, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, display_cls, "get_blender", display_get_blender, MRB_ARGS_NONE());
   /* Display.blend_mode is deprecated. */
-  mrb_define_alias(mrb, c->c, "blend_mode", "set_blender");
-  mrb_define_module_function(mrb, c, "set_title", display_set_title, MRB_ARGS_REQ(1));
-  mrb_define_module_function(mrb, c, "set_icon", display_set_icon, MRB_ARGS_REQ(1));
-  mrb_define_module_function(mrb, c, "w", display_get_w, MRB_ARGS_NONE());
-  mrb_define_module_function(mrb, c, "h", display_get_h, MRB_ARGS_NONE());
-  mrb_define_module_function(mrb, c, "render_target", display_render_target, MRB_ARGS_REQ(2)|MRB_ARGS_BLOCK());
+  mrb_define_alias(mrb, display_cls->c, "blend_mode", "set_blender");
+  mrb_define_module_function(mrb, display_cls, "set_title", display_set_title, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, display_cls, "set_icon", display_set_icon, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, display_cls, "w", display_get_w, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, display_cls, "h", display_get_h, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, display_cls, "render_target", display_render_target, MRB_ARGS_REQ(2)|MRB_ARGS_BLOCK());
 
   blend_alpha = mrb_intern_lit(mrb, "alpha");
   blend_screen = mrb_intern_lit(mrb, "screen");
