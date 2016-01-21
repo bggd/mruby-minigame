@@ -32,7 +32,7 @@ end
 GameLoop.run
 ```
 
-This mruby extension(mrbgem) require [Allegro](http://http://liballeg.org/) **5.1.12** or higher(currently tested in Windows 10 with visual studio 2015).
+This mruby extension(mrbgem) require [Allegro](http://liballeg.org/) **5.1.12** or higher(currently tested in Windows 10 with visual studio 2015).
 
 For more information at [Wiki](https://github.com/bggd/mruby-minigame/wiki).
 
