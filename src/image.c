@@ -473,7 +473,7 @@ minigame_image_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_method(mrb, image_cls, "set_filter", image_set_filter, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, image_cls, "get_filter", image_get_filter, MRB_ARGS_NONE());
   mrb_define_method(mrb, image_cls, "draw", image_draw, MRB_ARGS_ARG(2, 1));
-  mrb_define_method(mrb, image_cls, "sub_image", image_sub_image, MRB_ARGS_REQ(4));
+  mrb_define_method(mrb, image_cls, "subimage", image_sub_image, MRB_ARGS_REQ(4));
   mrb_define_method(mrb, image_cls, "convert_mask_to_alpha", image_convert_mask_to_alpha, MRB_ARGS_REQ(1));
 
   default_color = al_map_rgb(255, 255, 255);
