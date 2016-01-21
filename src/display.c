@@ -169,6 +169,35 @@ display_flip(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
+display_set_scissor(mrb_state *mrb, mrb_value self)
+{
+  mrb_int x, y, w, h;
+
+  mrb_get_args(mrb, "iiii", &x, &y, &w, &h);
+
+  al_set_clipping_rectangle(x, y, w, h);
+
+  return mrb_nil_value();
+}
+
+static mrb_value
+display_get_scissor(mrb_state *mrb, mrb_value self)
+{
+  mrb_int x, y, w, h;
+  mrb_value rect = mrb_ary_new_capa(mrb, 4);
+
+  al_get_clipping_rectangle(&x, &y, &w, &h);
+
+
+  mrb_ary_push(mrb, rect, mrb_fixnum_value(x));
+  mrb_ary_push(mrb, rect, mrb_fixnum_value(y));
+  mrb_ary_push(mrb, rect, mrb_fixnum_value(w));
+  mrb_ary_push(mrb, rect, mrb_fixnum_value(h));
+
+  return rect;
+}
+
+static mrb_value
 display_toggle_fullscreen(mrb_state *mrb, mrb_value self)
 {
   mrb_value title = mrb_mod_cv_get(mrb, display_cls, sym_title);
@@ -308,6 +337,8 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, display_cls, "create", display_create, MRB_ARGS_ARG(2, 1));
   mrb_define_module_function(mrb, display_cls, "clear", display_clear, MRB_ARGS_OPT(1));
   mrb_define_module_function(mrb, display_cls, "flip", display_flip, MRB_ARGS_NONE());
+  mrb_define_module_function(mrb, display_cls, "set_scissor", display_set_scissor, MRB_ARGS_REQ(4));
+  mrb_define_module_function(mrb, display_cls, "get_scissor", display_get_scissor, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, display_cls, "toggle_fullscreen", display_toggle_fullscreen, MRB_ARGS_NONE());
   mrb_define_module_function(mrb, display_cls, "screenshot", display_screenshot, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, display_cls, "set_blender", display_set_blender, MRB_ARGS_REQ(1));
