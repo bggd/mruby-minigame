@@ -1,4 +1,4 @@
-module Minigame::Key
+module MiniGame::Key
 
   @@key_pressed = Array.new(300) do |i| false end
   @@key_released = Array.new(300) do |i| false end

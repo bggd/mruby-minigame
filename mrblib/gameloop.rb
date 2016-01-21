@@ -1,4 +1,4 @@
-module Minigame::Gameloop
+module MiniGame::GameLoop
 
   @@quit = false
 
@@ -46,48 +46,48 @@ module Minigame::Gameloop
 
     frame_rate = 1.0/fps
 
-    timer = Minigame::Event::Timer.new(frame_rate)
+    timer = MiniGame::Event::Timer.new(frame_rate)
 
-    Minigame::Event.flush
+    MiniGame::Event.flush
 
     timer.start
 
-    update_prev = Minigame.get_time
+    update_prev = MiniGame.get_time
 
     while running && !@@quit
 
-      Minigame::Key.key_pressed = Array.new(300) do |i| false end
-      Minigame::Key.key_released = Array.new(300) do |i| false end
+      MiniGame::Key.key_pressed = Array.new(300) do |i| false end
+      MiniGame::Key.key_released = Array.new(300) do |i| false end
 
-      Minigame::Mouse.button_pressed = {left:false, middle:false, right:false}
-      Minigame::Mouse.button_released = {left:false, middle:false, right:false}
+      MiniGame::Mouse.button_pressed = {left:false, middle:false, right:false}
+      MiniGame::Mouse.button_released = {left:false, middle:false, right:false}
 
-      Minigame::Event.wait do |ev|
+      MiniGame::Event.wait do |ev|
         case ev.type
-        when Minigame::Event::TIMER
+        when MiniGame::Event::TIMER
           redraw = true
-        when Minigame::Event::KEY_DOWN
-          Minigame::Key.key_pressed[ev.keyboard.keycode] = true
-          Minigame::Key.key_down[ev.keyboard.keycode] = true
+        when MiniGame::Event::KEY_DOWN
+          MiniGame::Key.key_pressed[ev.keyboard.keycode] = true
+          MiniGame::Key.key_down[ev.keyboard.keycode] = true
           @@key_pressed_blk.call(ev.keyboard.keycode) if @@key_pressed_blk
-        when Minigame::Event::KEY_UP
-          Minigame::Key.key_released[ev.keyboard.keycode] = true
-          Minigame::Key.key_down[ev.keyboard.keycode] = false
+        when MiniGame::Event::KEY_UP
+          MiniGame::Key.key_released[ev.keyboard.keycode] = true
+          MiniGame::Key.key_down[ev.keyboard.keycode] = false
           @@key_released_blk.call(ev.keyboard.keycode) if @@key_released_blk
-        when Minigame::Event::MOUSE_AXES
-          Minigame::Mouse.x = ev.mouse.x
-          Minigame::Mouse.y = ev.mouse.y
-          #Minigame::Mouse.z = ev.mouse.z
-          #Minigame::Mouse.w = ev.mouse.w
-          #Minigame::Mouse.dx = ev.mouse.dx
-          #Minigame::Mouse.dy = ev.mouse.dy
-          #Minigame::Mouse.dz = ev.mouse.dz
-          #Minigame::Mouse.dw = ev.mouse.dw
-        when Minigame::Event::MOUSE_BUTTON_DOWN, Minigame::Event::MOUSE_BUTTON_UP
-          Minigame::Mouse.x = ev.mouse.x
-          Minigame::Mouse.y = ev.mouse.y
-          #Minigame::Mouse.z = ev.mouse.z
-          #Minigame::Mouse.w = ev.mouse.w
+        when MiniGame::Event::MOUSE_AXES
+          MiniGame::Mouse.x = ev.mouse.x
+          MiniGame::Mouse.y = ev.mouse.y
+          #MiniGame::Mouse.z = ev.mouse.z
+          #MiniGame::Mouse.w = ev.mouse.w
+          #MiniGame::Mouse.dx = ev.mouse.dx
+          #MiniGame::Mouse.dy = ev.mouse.dy
+          #MiniGame::Mouse.dz = ev.mouse.dz
+          #MiniGame::Mouse.dw = ev.mouse.dw
+        when MiniGame::Event::MOUSE_BUTTON_DOWN, MiniGame::Event::MOUSE_BUTTON_UP
+          MiniGame::Mouse.x = ev.mouse.x
+          MiniGame::Mouse.y = ev.mouse.y
+          #MiniGame::Mouse.z = ev.mouse.z
+          #MiniGame::Mouse.w = ev.mouse.w
           button = case ev.mouse.button
           when 1
             :left
@@ -97,34 +97,34 @@ module Minigame::Gameloop
             :middle
           end
 
-          b = if ev.type == Minigame::Event::MOUSE_BUTTON_DOWN
+          b = if ev.type == MiniGame::Event::MOUSE_BUTTON_DOWN
                 true
               else
                 false
               end
 
-          Minigame::Mouse.button_down[button] = b
+          MiniGame::Mouse.button_down[button] = b
 
           if b
-            Minigame::Mouse.button_pressed[button] = true
+            MiniGame::Mouse.button_pressed[button] = true
             @@mouse_pressed_blk.call(ev.mouse.x, ev.mouse.y, button) if @@mouse_pressed_blk
           else
-            Minigame::Mouse.button_released[button] = true
+            MiniGame::Mouse.button_released[button] = true
             @@mouse_released_blk.call(ev.mouse.x, ev.mouse.y, button) if @@mouse_released_blk
           end
-        when Minigame::Event::DISPLAY_CLOSE
+        when MiniGame::Event::DISPLAY_CLOSE
           running = false
         end
 
         break if redraw && Event.empty?
       end
 
-      update_dt = Minigame.get_time - update_prev
+      update_dt = MiniGame.get_time - update_prev
       @@update_blk.call(update_dt) if @@update_blk
-      update_prev = Minigame.get_time
-      #Minigame::Display.clear
+      update_prev = MiniGame.get_time
+      #MiniGame::Display.clear
       @@draw_blk.call if @@draw_blk
-      Minigame::Display.flip
+      MiniGame::Display.flip
       redraw = false
     end
   end

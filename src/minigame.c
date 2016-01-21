@@ -27,7 +27,7 @@ mrb_mruby_minigame_gem_init(mrb_state *mrb)
 
   al_init();
 
-  c = mrb_define_module(mrb, "Minigame");
+  c = mrb_define_module(mrb, "MiniGame");
 
   if (first_mrb == NULL) first_mrb = mrb;
   if (first_mrb != mrb) return;

@@ -1,4 +1,4 @@
-module Minigame::Event
+module MiniGame::Event
   @@type = 0
 
   class EVKeyboard
@@ -41,13 +41,13 @@ module Minigame::Event
 
   def self.wait(&blk)
     loop do
-      ev = Minigame::Event._wait_for_event()
+      ev = MiniGame::Event._wait_for_event()
       blk.call(ev)
     end
   end
 
   def self.poll(&blk)
-    while ev = Minigame::Event._get_next_event()
+    while ev = MiniGame::Event._get_next_event()
       blk.call(ev)
     end
   end

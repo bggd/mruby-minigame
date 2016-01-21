@@ -285,7 +285,7 @@ display_set_icon(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "o", &image);
 
   if (mrb_nil_p(image)) return mrb_nil_value();
-  if (!mrb_obj_is_kind_of(mrb, image, mrb_class_get_under(mrb, mrb_module_get(mrb, "Minigame"), "Image")))
+  if (!mrb_obj_is_kind_of(mrb, image, mrb_class_get_under(mrb, display_cls, "Image")))
     mrb_raisef(mrb, E_ARGUMENT_ERROR, "wrong argument type");
 
   al_set_display_icon(al_get_current_display(), (ALLEGRO_BITMAP*)DATA_PTR(image));
@@ -317,7 +317,7 @@ display_render_target(mrb_state *mrb, mrb_value self)
   if (mrb_nil_p(blk)) 
     mrb_raisef(mrb, E_ARGUMENT_ERROR, "no block given");
 
-  if (!mrb_obj_is_kind_of(mrb, image, mrb_class_get_under(mrb, mrb_module_get(mrb, "Minigame"), "Image")))
+  if (!mrb_obj_is_kind_of(mrb, image, mrb_class_get_under(mrb, display_cls, "Image")))
     mrb_raisef(mrb, E_ARGUMENT_ERROR, "wrong argument type");
 
   bitmap = (ALLEGRO_BITMAP*)DATA_PTR(image);

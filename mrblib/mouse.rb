@@ -1,4 +1,4 @@
-module Minigame::Mouse
+module MiniGame::Mouse
 
   @@x = 0
   @@y = 0
