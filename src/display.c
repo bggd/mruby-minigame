@@ -328,7 +328,7 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   blend_multiplicative = mrb_intern_lit(mrb, "multiplicative");
   blend_replace = mrb_intern_lit(mrb, "replace");
   
-  current_blender = blend_replace;
+  current_blender = blend_alpha;
 
   sym_title = mrb_intern_lit(mrb, "title");
   sym_vsync = mrb_intern_lit(mrb, "vsync");
