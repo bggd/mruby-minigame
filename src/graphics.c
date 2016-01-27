@@ -17,7 +17,7 @@ graphics_line(mrb_state *mrb, mrb_value self)
 
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "ffff|of", &x1, &y1, &x2, &y2, &color, &line_size);
+  argc = mrb_get_args(mrb, "ffffo|f", &x1, &y1, &x2, &y2, &color, &line_size);
 
   if (argc > 4) {
     if (!mrb_nil_p(color)) {
@@ -47,7 +47,7 @@ graphics_rect(mrb_state *mrb, mrb_value self)
   bool fill_mode = false;
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "ffff|of", &x, &y, &w, &h, &color, &line_size);
+  argc = mrb_get_args(mrb, "ffffo|f", &x, &y, &w, &h, &color, &line_size);
 
   if (argc > 4) {
     if (!mrb_nil_p(color)) {
@@ -79,7 +79,7 @@ graphics_circle(mrb_state *mrb, mrb_value self)
 
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "fff|of", &x, &y, &r, &color, &line_size);
+  argc = mrb_get_args(mrb, "fffo|f", &x, &y, &r, &color, &line_size);
 
   if (argc > 3) {
     if (!mrb_nil_p(color)) {
@@ -110,9 +110,9 @@ minigame_graphics_init(mrb_state *mrb, struct RClass *parent)
 
   c = mrb_define_module_under(mrb, parent, "Graphics");
 
-  mrb_define_module_function(mrb, c, "line", graphics_line, MRB_ARGS_ARG(4, 2));
-  mrb_define_module_function(mrb, c, "rect", graphics_rect, MRB_ARGS_ARG(4, 2));
-  mrb_define_module_function(mrb, c, "circle", graphics_circle, MRB_ARGS_ARG(3, 2));
+  mrb_define_module_function(mrb, c, "line", graphics_line, MRB_ARGS_ARG(5, 1));
+  mrb_define_module_function(mrb, c, "rect", graphics_rect, MRB_ARGS_ARG(5, 1));
+  mrb_define_module_function(mrb, c, "circle", graphics_circle, MRB_ARGS_ARG(4, 1));
 
   default_color = al_map_rgb(255, 255, 255);
 }
