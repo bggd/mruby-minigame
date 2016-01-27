@@ -6,21 +6,20 @@ mruby-minigame is a 2D game framework for rapid prototyping.
 example:
 
 ``` ruby
-include Minigame
+include MiniGame
 
-# must create display at first.
 Display.create 640, 480
 
 img = Image.load 'hero.png'
 
-Gameloop.key_pressed do |key|
+GameLoop.key_pressed do |key|
   if key == Key::ESCAPE
-    Gameloop.quit
+    GameLoop.quit
   end
 end
 
-Gameloop.draw do
-  Display.clear [120, 255, 120]
+GameLoop.draw do
+  Display.clear [32, 64, 128] # or Display.clear(Color.rgb(32, 64, 128))
   
   img.draw Mouse.x, Mouse.y
   
@@ -30,10 +29,10 @@ Gameloop.draw do
 end
 
 # start game loop.
-Gameloop.run
+GameLoop.run
 ```
 
-This mruby extension require [allegro](http://alleg.sourceforge.net) 5.0.10 or higher(currently tested in Ubuntu 14.04 and Windows 7).
+This mruby extension(mrbgem) require [Allegro](http://liballeg.org/) **5.1.12** or higher(currently tested in Windows 10 with visual studio 2015).
 
-For more information on [Wiki](https://github.com/bggd/mruby-minigame/wiki).
+For more information at [Wiki](https://github.com/bggd/mruby-minigame/wiki).
 
