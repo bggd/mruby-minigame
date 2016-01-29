@@ -8,13 +8,11 @@
 static struct RClass *display_cls = NULL;
 
 static ALLEGRO_DISPLAY *disp = NULL;
-static ALLEGRO_BITMAP *icon_bitmap = NULL;
 
 static mrb_sym sym_title;
 static mrb_sym sym_vsync;
 static mrb_sym sym_fullscreen;
 static mrb_sym sym_multisample;
-static mrb_sym sym_icon;
 
 static mrb_sym current_blender;
 
@@ -31,8 +29,6 @@ display_create(mrb_state *mrb, mrb_value self)
 {
   mrb_int width, height;
   const char *title_cstr = NULL;
-  const char *icon_filepath = NULL;
-  mrb_value icon;
   mrb_value opt;
   int argc;
 
@@ -77,13 +73,6 @@ display_create(mrb_state *mrb, mrb_value self)
         v = mrb_hash_get(mrb, opt, k);
         mrb_mod_cv_set(mrb, display_cls, sym_multisample, v);
       }
-      else if (sym == sym_icon) {
-        icon = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(icon)) {
-          mrb_check_type(mrb, icon, MRB_TT_STRING);
-          icon_filepath = mrb_string_value_cstr(mrb, &icon);
-        }
-      }
       else
         mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %S", k);
     }
@@ -119,20 +108,15 @@ display_create(mrb_state *mrb, mrb_value self)
 
     al_set_window_title(disp, mrb_str_to_cstr(mrb, mrb_mod_cv_get(mrb, display_cls, sym_title)));
 
-    if (icon_filepath) {
-      icon_bitmap = al_load_bitmap(icon_filepath);
-      al_set_display_icon(disp, icon_bitmap);
-    }
-
     minigame_register_event_source(al_get_display_event_source(disp));
 
     /* set default blend mode to :alpha */
     al_set_separate_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA, ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
 
-    return mrb_true_value();
+    return mrb_nil_value();
   }
-
-  return mrb_false_value();
+  else
+    mrb_raise(mrb, E_RUNTIME_ERROR, "Could not create Display");
 }
 
 static mrb_value
@@ -343,8 +327,6 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   mrb_define_module_function(mrb, display_cls, "screenshot", display_screenshot, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, display_cls, "set_blender", display_set_blender, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, display_cls, "get_blender", display_get_blender, MRB_ARGS_NONE());
-  /* Display.blend_mode is deprecated. */
-  mrb_define_alias(mrb, display_cls->c, "blend_mode", "set_blender");
   mrb_define_module_function(mrb, display_cls, "set_title", display_set_title, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, display_cls, "set_icon", display_set_icon, MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, display_cls, "w", display_get_w, MRB_ARGS_NONE());
@@ -365,7 +347,6 @@ minigame_display_init(mrb_state *mrb, struct RClass *parent)
   sym_vsync = mrb_intern_lit(mrb, "vsync");
   sym_fullscreen = mrb_intern_lit(mrb, "fullscreen");
   sym_multisample = mrb_intern_lit(mrb, "multisample");
-  sym_icon = mrb_intern_lit(mrb, "icon");
 }
 
 void
