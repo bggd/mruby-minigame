@@ -13,22 +13,17 @@ graphics_line(mrb_state *mrb, mrb_value self)
   mrb_float x1, y1, x2, y2;
   mrb_value color;
   mrb_float line_size = 1.0;
-  mrb_int argc;
 
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "ffffo|f", &x1, &y1, &x2, &y2, &color, &line_size);
+  mrb_get_args(mrb, "ffffo|f", &x1, &y1, &x2, &y2, &color, &line_size);
 
-  if (argc > 4) {
-    if (!mrb_nil_p(color)) {
-      if (mrb_array_p(color)) {
-        MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
-      }
-      else {
-        mrb_data_check_type(mrb, color, &g_minigame_color_t);
-        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
-      }
-    }
+  if (mrb_array_p(color)) {
+    MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
+  }
+  else {
+    mrb_data_check_type(mrb, color, &g_minigame_color_t);
+    draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
   }
 
   al_draw_line(x1, y1, x2, y2, draw_color, line_size);
@@ -42,23 +37,17 @@ graphics_rect(mrb_state *mrb, mrb_value self)
   mrb_float x, y, w, h;
   mrb_value color;
   mrb_float line_size = 0;
-  mrb_int argc;
 
-  bool fill_mode = false;
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "ffffo|f", &x, &y, &w, &h, &color, &line_size);
+  mrb_get_args(mrb, "ffffo|f", &x, &y, &w, &h, &color, &line_size);
 
-  if (argc > 4) {
-    if (!mrb_nil_p(color)) {
-      if (mrb_array_p(color)) {
-        MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
-      }
-      else {
-        mrb_data_check_type(mrb, color, &g_minigame_color_t);
-        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
-      }
-    }
+  if (mrb_array_p(color)) {
+    MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
+  }
+  else {
+    mrb_data_check_type(mrb, color, &g_minigame_color_t);
+    draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
   }
 
   if (line_size <= 0)
@@ -75,22 +64,17 @@ graphics_circle(mrb_state *mrb, mrb_value self)
   mrb_float x, y, r;
   mrb_value color;
   mrb_float line_size = 0;
-  mrb_int argc;
 
   ALLEGRO_COLOR draw_color = default_color;
 
-  argc = mrb_get_args(mrb, "fffo|f", &x, &y, &r, &color, &line_size);
+  mrb_get_args(mrb, "fffo|f", &x, &y, &r, &color, &line_size);
 
-  if (argc > 3) {
-    if (!mrb_nil_p(color)) {
-      if (mrb_array_p(color)) {
-        MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
-      }
-      else {
-        mrb_data_check_type(mrb, color, &g_minigame_color_t);
-        draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
-      }
-    }
+  if (mrb_array_p(color)) {
+    MINIGAME_EXPAND_COLOR_ARRAY(color, draw_color)
+  }
+  else {
+    mrb_data_check_type(mrb, color, &g_minigame_color_t);
+    draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
   }
 
   if (line_size <= 0)
