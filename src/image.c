@@ -266,13 +266,6 @@ static mrb_value
 image_draw(mrb_state *mrb, mrb_value self)
 {
   mrb_int x, y;
-  mrb_value angle;
-  mrb_value color;
-  mrb_value region;
-  mrb_value scale;
-  mrb_value anchor;
-  mrb_value pivot;
-  mrb_value flip;
   mrb_value opt;
 
   ALLEGRO_BITMAP *bitmap;
@@ -302,6 +295,7 @@ image_draw(mrb_state *mrb, mrb_value self)
   if (argc > 2) { 
     int i;
     mrb_value keys;
+    mrb_value v;
 
     keys = mrb_hash_keys(mrb, opt);
 
@@ -315,72 +309,72 @@ image_draw(mrb_state *mrb, mrb_value self)
         sym = mrb_symbol(k);
 
       if (sym == sym_angle) {
-        angle = mrb_hash_get(mrb, opt, k);
-        angle_rad = mrb_fixnum(mrb_Integer(mrb, angle)) * (ALLEGRO_PI/180.0);
+        v = mrb_hash_get(mrb, opt, k);
+        angle_rad = mrb_fixnum(mrb_Integer(mrb, v)) * (ALLEGRO_PI/180.0);
       }
       else if (sym == sym_color) {
-        color = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(color)) {
-          if (mrb_array_p(color)) {
-            MINIGAME_EXPAND_COLOR_ARRAY(color, tint)
+        v = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(v)) {
+          if (mrb_array_p(v)) {
+            MINIGAME_EXPAND_COLOR_ARRAY(v, tint)
           }
           else {
-            mrb_data_check_type(mrb, color, &g_minigame_color_t);
-            tint = *((ALLEGRO_COLOR*)DATA_PTR(color));
+            mrb_data_check_type(mrb, v, &g_minigame_color_t);
+            tint = *((ALLEGRO_COLOR*)DATA_PTR(v));
           }
         }
       }
       else if (sym == sym_region) {
-        region = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(region)) {
-          mrb_check_type(mrb, region, MRB_TT_ARRAY);
-          src_x = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[0]));
-          src_y = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[1]));
-          src_w = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[2]));
-          src_h = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(region)[3]));
+        v = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(v)) {
+          mrb_check_type(mrb, v, MRB_TT_ARRAY);
+          src_x = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(v)[0]));
+          src_y = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(v)[1]));
+          src_w = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(v)[2]));
+          src_h = mrb_fixnum(mrb_Integer(mrb, RARRAY_PTR(v)[3]));
           if (src_w < 0) src_w = 0;
           if (src_h < 0) src_h = 0;
         }
       }
       else if (sym == sym_scale) {
-        scale = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(scale)) {
-          if (mrb_array_p(scale)) {
-            scale_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(scale)[0]));
-            scale_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(scale)[1]));
+        v = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(v)) {
+          if (mrb_array_p(v)) {
+            scale_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(v)[0]));
+            scale_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(v)[1]));
           }
           else
-            scale_x = scale_y = mrb_float(mrb_Float(mrb, scale));
+            scale_x = scale_y = mrb_float(mrb_Float(mrb, v));
         }
       }
       else if (sym == sym_anchor) {
-        anchor = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(anchor)) {
-          if (mrb_array_p(anchor)) {
-            anchor_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(anchor)[0]));
-            anchor_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(anchor)[1]));
+        v = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(v)) {
+          if (mrb_array_p(v)) {
+            anchor_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(v)[0]));
+            anchor_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(v)[1]));
           }
           else
-            anchor_x = anchor_y = mrb_float(mrb_Float(mrb, anchor));
+            anchor_x = anchor_y = mrb_float(mrb_Float(mrb, v));
         }
       }
       else if (sym == sym_pivot) {
-        pivot = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(pivot)) {
-          if (mrb_array_p(pivot)) {
-            pivot_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(pivot)[0]));
-            pivot_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(pivot)[1]));
+        v = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(v)) {
+          if (mrb_array_p(v)) {
+            pivot_x = mrb_float(mrb_Float(mrb, RARRAY_PTR(v)[0]));
+            pivot_y = mrb_float(mrb_Float(mrb, RARRAY_PTR(v)[1]));
           }
           else
-            pivot_x = pivot_y = mrb_float(mrb_Float(mrb, pivot));
+            pivot_x = pivot_y = mrb_float(mrb_Float(mrb, v));
         }
       }
       else if (sym == sym_flip) {
-        flip = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(flip)) {
-          mrb_check_type(mrb, flip, MRB_TT_ARRAY);
-          flip_xy |= mrb_bool(RARRAY_PTR(flip)[0]) ? ALLEGRO_FLIP_HORIZONTAL : 0;
-          flip_xy |= mrb_bool(RARRAY_PTR(flip)[1]) ? ALLEGRO_FLIP_VERTICAL : 0;
+        v = mrb_hash_get(mrb, opt, k);
+        if (!mrb_nil_p(v)) {
+          mrb_check_type(mrb, v, MRB_TT_ARRAY);
+          flip_xy |= mrb_bool(RARRAY_PTR(v)[0]) ? ALLEGRO_FLIP_HORIZONTAL : 0;
+          flip_xy |= mrb_bool(RARRAY_PTR(v)[1]) ? ALLEGRO_FLIP_VERTICAL : 0;
         }
       }
       else
