@@ -20,7 +20,7 @@ main(int argc, char **argv)
 
   mrb = mrb_open();
   if (mrb == NULL) {
-    fputs("Invalid mrb_state, exitin mruby", stderr);
+    fputs("Invalid mrb_state, exiting mruby", stderr);
     return EXIT_FAILURE;
   }
 
