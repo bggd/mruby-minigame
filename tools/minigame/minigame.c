@@ -1,11 +1,17 @@
 #include <mruby.h>
 #include <mruby/compile.h>
-#include <stdio.h>
+#include <windows.h>
+#include <stdlib.h>
 #include <stdlib.h>
 
 
+#ifdef _WIN32
+int WINAPI
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+#else
 int
 main(int argc, char **argv)
+#endif
 {
   mrb_state *mrb;
   mrbc_context *c;
