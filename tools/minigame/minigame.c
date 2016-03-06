@@ -1,11 +1,11 @@
 #include <mruby.h>
 #include <mruby/compile.h>
-#include <windows.h>
 #include <stdlib.h>
 #include <stdlib.h>
 
 
 #ifdef _WIN32
+#include <windows.h>
 int WINAPI
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #else
