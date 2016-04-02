@@ -15,6 +15,7 @@ error_display(const char *text)
   al_install_mouse();
   al_init_font_addon();
 
+  al_set_new_display_flags(ALLEGRO_WINDOWED);
   al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
   disp = al_create_display(640, 480);
   al_set_window_title(disp, "mruby-minigame");

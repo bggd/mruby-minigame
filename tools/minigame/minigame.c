@@ -44,10 +44,11 @@ main(int argc, char **argv)
   mrbc_context_free(mrb, c);
 
   if (mrb->exc && !mrb_undef_p(v)) {
-    FILE* redirect = freopen("error_info.txt", "w", stderr);
+    FILE *redirect = freopen("error_info.txt", "w", stderr);
     if (redirect) {
-      FILE* error_info;
+      FILE *error_info;
       char str[512];
+      char *final_text;
       mrb_value text = mrb_str_buf_new(mrb, 0);
 
       mrb_print_error(mrb);
@@ -60,7 +61,14 @@ main(int argc, char **argv)
       }
       fclose(error_info);
 
-      error_display(RSTRING_PTR(text));
+      final_text = (char*)malloc(RSTRING_LEN(text)+1);
+      memcpy(final_text, RSTRING_PTR(text), RSTRING_LEN(text)+1);
+
+      mrb_close(mrb);
+      mrb = NULL;
+
+      error_display(final_text);
+      free(final_text);
     }
   }
 
