@@ -1,11 +1,21 @@
 #include "minigame.h"
 
+static mrb_value
+keycode_to_name(mrb_state *mrb, mrb_value self)
+{
+  mrb_value k;
+  mrb_get_args(mrb, "i", &k);
+  return mrb_str_new_cstr(mrb, al_keycode_to_name(mrb_fixnum(k)));
+}
+
 void
 minigame_key_constants_init(mrb_state *mrb, struct RClass *parent)
 {
   struct RClass *c = NULL;
 
   c = mrb_define_module_under(mrb, parent, "Key");
+
+  mrb_define_module_function(mrb, c, "keycode_to_name", keycode_to_name, MRB_ARGS_REQ(1));
 
   mrb_define_const(mrb, c, "A", mrb_fixnum_value(ALLEGRO_KEY_A));
   mrb_define_const(mrb, c, "B", mrb_fixnum_value(ALLEGRO_KEY_B));
