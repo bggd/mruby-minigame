@@ -23,6 +23,7 @@ main(int argc, char **argv)
   mrbc_context *c;
   mrb_value v;
   FILE *fp;
+  FILE *redirect = freopen("_stderr.txt", "w", stderr);
 
   fp = fopen("init_minigame.rb", "rb");
   if (fp == NULL) {
@@ -43,8 +44,7 @@ main(int argc, char **argv)
   fclose(fp);
   mrbc_context_free(mrb, c);
 
-  if (mrb->exc && !mrb_undef_p(v)) {
-    FILE *redirect = freopen("error_info.txt", "w", stderr);
+  if (mrb->exc) {
     if (redirect) {
       FILE *error_info;
       char str[512];
@@ -54,8 +54,8 @@ main(int argc, char **argv)
       mrb_print_error(mrb);
       fclose(redirect);
 
-      error_info = fopen("error_info.txt", "r");
-      while (fgets(str, 512, error_info)) {
+      error_info = fopen("_stderr.txt", "r");
+      while (error_info && fgets(str, 512, error_info)) {
         if (str[0] == '\t') str[0] = ' ';
         text = mrb_str_cat_cstr(mrb, text, str);
       }
