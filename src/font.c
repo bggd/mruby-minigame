@@ -8,8 +8,6 @@
 
 static struct RClass *font_cls = NULL;
 
-static ALLEGRO_COLOR default_color;
-
 static mrb_sym sym_align;
 static mrb_sym sym_align_left;
 static mrb_sym sym_align_center;
@@ -57,64 +55,30 @@ font_draw(mrb_state *mrb, mrb_value self)
   mrb_float x, y;
   char *text;
   mrb_value color;
-  mrb_value align;
-  mrb_value opt;
-  ALLEGRO_COLOR tint = default_color;
+  mrb_sym align;
+  ALLEGRO_COLOR tint;
   int align_flag = ALLEGRO_ALIGN_LEFT;
-  mrb_int argc;
 
   ALLEGRO_FONT *font;
 
-  argc = mrb_get_args(mrb, "ffz|H", &x, &y, &text, &opt);
+  mrb_get_args(mrb, "ffzno", &x, &y, &text, &align, &color);
 
-  if (argc > 3) {
-    int i;
-    mrb_value keys;
-
-    keys = mrb_hash_keys(mrb, opt);
-    
-    for (i = 0; i < RARRAY_LEN(keys); ++i) {
-      mrb_sym sym;
-      mrb_value k = RARRAY_PTR(keys)[i];
-
-      if (mrb_string_p(k))
-        sym = mrb_intern_str(mrb, k);
-      else
-        sym = mrb_symbol(k);
-
-      if (sym == sym_color) {
-        color = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(color)) {
-          if (mrb_array_p(color)) {
-            MINIGAME_EXPAND_COLOR_ARRAY(color, tint);
-          }
-          else {
-            mrb_data_check_type(mrb, color, &g_minigame_color_t);
-            tint = *((ALLEGRO_COLOR*)DATA_PTR(color));
-          }
-        }
-      }
-      else if (sym == sym_align) {
-        align = mrb_hash_get(mrb, opt, k);
-        if (!mrb_nil_p(align)) {
-          mrb_sym a;
-          if (mrb_string_p(align))
-            a = mrb_intern_str(mrb, align);
-          else
-            a = mrb_symbol(align);
-
-          if (a == sym_align_left)
-            align_flag = ALLEGRO_ALIGN_LEFT;
-          else if (a == sym_align_center)
-            align_flag = ALLEGRO_ALIGN_CENTRE;
-          else if (a == sym_align_right)
-            align_flag = ALLEGRO_ALIGN_RIGHT;
-        }
-        else
-          mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %s", k);
-      }
-    }
+  if (mrb_array_p(color)) {
+    MINIGAME_EXPAND_COLOR_ARRAY(color, tint);
   }
+  else {
+    mrb_data_check_type(mrb, color, &g_minigame_color_t);
+    tint = *((ALLEGRO_COLOR*)DATA_PTR(color));
+  }
+
+  if (align == sym_align_left)
+    align_flag = ALLEGRO_ALIGN_LEFT;
+  else if (align == sym_align_center)
+    align_flag = ALLEGRO_ALIGN_CENTRE;
+  else if (align == sym_align_right)
+    align_flag = ALLEGRO_ALIGN_RIGHT;
+  else
+    mrb_raisef(mrb, E_ARGUMENT_ERROR, "unknown keyword: %s", align);
 
   font = (ALLEGRO_FONT*)DATA_PTR(self);
 
@@ -131,8 +95,6 @@ minigame_font_init(mrb_state *mrb, struct RClass *parent)
   al_init_font_addon();
   al_init_ttf_addon();
 
-  default_color = al_map_rgb(255, 255, 255);
-
   font_cls = mrb_define_class_under(mrb, parent, "Font", mrb->object_class);
   MRB_SET_INSTANCE_TT(font_cls, MRB_TT_DATA);
 
@@ -142,7 +104,7 @@ minigame_font_init(mrb_state *mrb, struct RClass *parent)
 
   mrb_undef_method(mrb, font_cls, "initialize");
 
-  mrb_define_method(mrb, font_cls, "puts", font_draw, MRB_ARGS_ARG(3, 1));
+  mrb_define_method(mrb, font_cls, "puts", font_draw, MRB_ARGS_REQ(5));
 
   sym_align = mrb_intern_lit(mrb, "align");
   sym_align_left = mrb_intern_lit(mrb, "left");
