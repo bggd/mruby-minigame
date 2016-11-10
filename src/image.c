@@ -71,7 +71,7 @@ image_new(mrb_state *mrb, mrb_value self)
   int argc;
 
   ALLEGRO_BITMAP *bitmap;
-  ALLEGRO_COLOR new_color = default_color;
+  ALLEGRO_COLOR new_color = al_map_rgb(0, 0, 0);
 
   argc = mrb_get_args(mrb, "ii|o", &width, &height, &color);
 
@@ -239,7 +239,7 @@ image_clear(mrb_state *mrb, mrb_value self)
   int argc;
 
   ALLEGRO_BITMAP *bitmap;
-  ALLEGRO_COLOR clear_color = default_color;
+  ALLEGRO_COLOR clear_color = al_map_rgb(0, 0, 0);
 
   argc = mrb_get_args(mrb, "|o", &color);
 
