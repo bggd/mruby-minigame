@@ -97,7 +97,6 @@ graphics_circle(mrb_state *mrb, mrb_value self)
     draw_color = *((ALLEGRO_COLOR*)DATA_PTR(color));
   }
 
-  //al_draw_filled_circle(x, y, r, draw_color);
   al_draw_circle(x, y, r, draw_color, line_size);
 
   return mrb_nil_value();
