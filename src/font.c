@@ -116,4 +116,3 @@ minigame_font_init(mrb_state *mrb, struct RClass *parent)
   mrb_value v = mrb_obj_value(mrb_data_object_alloc(mrb, font_cls, builtin, &font_t));
   mrb_mod_cv_set(mrb, font_cls, mrb_intern_lit(mrb, "builtin"), v);
 }
-
