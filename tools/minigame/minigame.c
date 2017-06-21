@@ -5,25 +5,34 @@
 #include <mruby/string.h>
 #include <mruby/variable.h>
 #include <stdlib.h>
-#include <stdlib.h>
+#include <stdio.h>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 extern void error_display(const char *text);
 
-
+static void
+mg_create_console()
+{
 #ifdef _WIN32
-#include <windows.h>
-int WINAPI
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-#else
+  if (AllocConsole()) {
+    AttachConsole(GetCurrentProcessId());
+    freopen("CON", "r", stdin);
+    freopen("CON", "w", stdout);
+    freopen("CON", "w", stderr);
+  }
+#endif
+}
+
 int
 main(int argc, char **argv)
-#endif
 {
   mrb_state *mrb;
   mrbc_context *c;
-  mrb_value v;
   FILE *fp;
-  FILE *redirect = freopen("_stderr.txt", "w", stderr);
 
   fp = fopen("init_minigame.rb", "rb");
   if (fp == NULL) {
@@ -40,36 +49,20 @@ main(int argc, char **argv)
   c = mrbc_context_new(mrb);
   mrbc_filename(mrb, c, "init_minigame.rb");
 
-  v = mrb_load_file_cxt(mrb, fp, c);
+  mrb_load_file_cxt(mrb, fp, c);
   fclose(fp);
   mrbc_context_free(mrb, c);
 
   if (mrb->exc) {
-    if (redirect) {
-      FILE *error_info;
-      char str[512];
-      char *final_text;
-      mrb_value text = mrb_str_buf_new(mrb, 0);
+    mrb_value v;
 
-      mrb_print_error(mrb);
-      fclose(redirect);
+    v = mrb_funcall(mrb, mrb_obj_value(mrb->exc), "inspect", 0);
 
-      error_info = fopen("_stderr.txt", "r");
-      while (error_info && fgets(str, 512, error_info)) {
-        if (str[0] == '\t') str[0] = ' ';
-        text = mrb_str_cat_cstr(mrb, text, str);
-      }
-      fclose(error_info);
+    mg_create_console();
 
-      final_text = (char*)malloc(RSTRING_LEN(text)+1);
-      memcpy(final_text, RSTRING_PTR(text), RSTRING_LEN(text)+1);
+    mrb_print_error(mrb);
 
-      mrb_close(mrb);
-      mrb = NULL;
-
-      error_display(final_text);
-      free(final_text);
-    }
+    error_display(RSTRING_PTR(v));
   }
 
   mrb_close(mrb);
